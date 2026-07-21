@@ -1,38 +1,48 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const deliverySchema = new mongoose.Schema({
-  order: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Order',
-    required: [true, 'El pedido es obligatorio']
-  },
-  driver: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'assigned', 'in_transit', 'delivered'],
-    default: 'pending'
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'normal', 'high'],
-    default: 'normal'
-  },
-  assignedAt: {
-    type: Date,
-    default: null
-  },
-  deliveredAt: {
-    type: Date,
-    default: null
-  }
-}, {
-  timestamps: true
-});
+import { ORDER_PRIORITY, DELIVERY_STATUS } from "../constants/index.js";
 
-const Delivery = mongoose.model('Delivery', deliverySchema);
+const deliverySchema = new mongoose.Schema(
+  {
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      required: [true, "El pedido es obligatorio"],
+    },
+    driver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    status: {
+      type: String,
+      enum: [
+        DELIVERY_STATUS.PENDING,
+        DELIVERY_STATUS.ASSIGNED,
+        DELIVERY_STATUS.INTRANSIT,
+        DELIVERY_STATUS.DELIVERED,
+      ],
+      default: DELIVERY_STATUS.PENDING,
+    },
+    priority: {
+      type: String,
+      enum: [ORDER_PRIORITY.LOW, ORDER_PRIORITY.NORMAL, ORDER_PRIORITY.HIGH],
+      default: ORDER_PRIORITY.NORMAL,
+    },
+    assignedAt: {
+      type: Date,
+      default: null,
+    },
+    deliveredAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+const Delivery = mongoose.model("Delivery", deliverySchema);
 
 export default Delivery;

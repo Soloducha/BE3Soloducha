@@ -1,6 +1,10 @@
 import ordersRepositorie from "../repositories/orders.repositories.js";
 import usersRepositorie from "../repositories/users.repositories.js";
-import { HTTP_STATUS_CODES } from "../constants/index.js";
+import {
+  HTTP_STATUS_CODES,
+  USER_ROLES,
+  ORDER_STATUS,
+} from "../constants/index.js";
 
 class ordersService {
   async getAllOrders() {
@@ -16,7 +20,7 @@ class ordersService {
   }
 
   async createOrder(orderData) {
-    const { customer, items, deliveryAddress, priority } = orderData;
+    const { customer, items, deliveryAddress } = orderData;
 
     if (!customer) {
       throw new Error("Falta el cliente", HTTP_STATUS_CODES.BAD_REQUEST);
@@ -47,7 +51,10 @@ class ordersService {
       );
     }
 
-    const newOrder = await ordersRepositorie.createOrder(orderData);
+    const newOrder = await ordersRepositorie.createOrder({
+      ...orderData,
+      total,
+    });
 
     console.log(
       `[EMAIL SIMULADO] Enviando confirmacion al usuario ${customer}...`,
@@ -56,15 +63,15 @@ class ordersService {
       `[EMAIL SIMULADO] Tu pedido ${newOrder._id} fue creado. Total: $${total}`,
     );
 
-    const shippingCost = newOrder.items.reduce((acc, item) => {
+    const shippingCost = items.reduce((acc, item) => {
       return acc + item.quantity * 10;
     }, 0);
 
-    res.status(201).json({
+    return {
       order: newOrder,
       shippingCost,
       message: "Pedido creado y email enviado",
-    });
+    };
   }
 
   async updateOrderStatus(oid, status) {

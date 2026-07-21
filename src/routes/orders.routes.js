@@ -10,7 +10,6 @@ import {
 } from "../constants/index.js";
 
 const router = Router();
-//router.get("", usersController.getAllUsers);
 // GET /api/orders
 router.get("", ordersController.getAllOrders);
 // GET /api/orders/:oid

@@ -45,6 +45,15 @@ class ordersController {
       next(error);
     }
   }
+
+  async deleteOrder(req, res, next) {
+    try {
+      const deletedOrder = await ordersService.deleteOrder(req.params.oid);
+      res.json({ status: HTTP_STATUS.SUCCESS, payload: deletedOrder });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ordersController();

@@ -1,5 +1,5 @@
 import productsRepositorie from "../repositories/products.repositories.js";
-import PRODUCT_STATUS from "../constants/productStatus.js";
+import PRODUCT_STATUS from "../constants/index.js";
 
 class productsService {
   async getAllProducts() {

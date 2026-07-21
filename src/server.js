@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 import apiRouter from "./routes/index.js";
 
-import config from "./config/config.js";
+import config from "./config/index.js";
 
 const app = express();
 

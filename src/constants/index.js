@@ -9,6 +9,7 @@ export const DELIVERY_STATUS = Object.freeze({
   PENDING: "pending",
   ASSIGNED: "assigned",
   DELIVERED: "delivered",
+  INTRANSIT: "in_transit",
   CANCELLED: "cancelled",
 });
 
@@ -17,6 +18,8 @@ export const ORDER_STATUS = Object.freeze({
   IN_PROGRESS: "in_progress",
   DELIVERED: "delivered",
   CANCELLED: "cancelled",
+  INTRANSIT: "in_transit",
+  PICKEDUP: "picked_up",
   ASSIGNED: "assigned",
   CREATED: "created",
 });
@@ -47,3 +50,15 @@ export const HTTP_STATUS_CODES = Object.freeze({
   CONFLICT: 409,
   INTERNAL_SERVER_ERROR: 500,
 });
+
+const constants = Object.freeze({
+  USER_ROLES,
+  DELIVERY_STATUS,
+  ORDER_STATUS,
+  ORDER_PRIORITY,
+  PRODUCT_STATUS,
+  HTTP_STATUS,
+  HTTP_STATUS_CODES,
+});
+
+export default constants;
