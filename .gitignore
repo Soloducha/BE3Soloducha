@@ -1,0 +1,42 @@
+.DS_Store
+Thumbs.db
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build
+dist/
+build/
+
+# Logs
+logs/
+*.log
+debug.log*
+
+# Runtime
+tmp/
+temp/
+pids/
+*.pid
+
+# Coverage
+coverage/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor directories and files
+.vscode/
+.idea/
+
+# OS generated files
+ehthumbs.db
+Icon?
+
+# Misc
+*.tgz
+.cache/
