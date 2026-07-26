@@ -5,6 +5,7 @@ import {
   USER_ROLES,
   ORDER_STATUS,
 } from "../constants/index.js";
+import AppError from "../utils/errors.js";
 
 class ordersService {
   async getAllOrders() {
@@ -14,7 +15,7 @@ class ordersService {
   async getOrderById(oid) {
     const order = await ordersRepositorie.getOrderById(oid);
     if (!order) {
-      throw new Error("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
     return order;
   }
@@ -23,16 +24,16 @@ class ordersService {
     const { customer, items, deliveryAddress } = orderData;
 
     if (!customer) {
-      throw new Error("Falta el cliente", HTTP_STATUS_CODES.BAD_REQUEST);
+      throw new AppError("Falta el cliente", HTTP_STATUS_CODES.BAD_REQUEST);
     }
     if (!items || items.length === 0) {
-      throw new Error(
+      throw new AppError(
         "Falta los items del pedido",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
     }
     if (!deliveryAddress) {
-      throw new Error("Falta la direccion", HTTP_STATUS_CODES.BAD_REQUEST);
+      throw new AppError("Falta la direccion", HTTP_STATUS_CODES.BAD_REQUEST);
     }
 
     const total = items.reduce((acc, item) => {
@@ -41,11 +42,11 @@ class ordersService {
 
     const user = await usersRepositorie.getUserById(customer);
     if (!user) {
-      throw new Error("El usuario no existe", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("El usuario no existe", HTTP_STATUS_CODES.NOT_FOUND);
     }
 
     if (user.role === USER_ROLES.DRIVER) {
-      throw new Error(
+      throw new AppError(
         "Los repartidores no pueden crear pedidos",
         HTTP_STATUS_CODES.FORBIDDEN,
       );
@@ -76,25 +77,25 @@ class ordersService {
 
   async updateOrderStatus(oid, status) {
     if (!status) {
-      throw new Error(
+      throw new AppError(
         "El estado es obligatorio",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
     }
     const order = await ordersRepositorie.getOrderById(oid);
     if (!order) {
-      throw new Error("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
 
     if (order.status === ORDER_STATUS.DELIVERED) {
-      throw new Error("El pedido ya fue entregado", HTTP_STATUS_CODES.CONFLICT);
+      throw new AppError(
+        "El pedido ya fue entregado",
+        HTTP_STATUS_CODES.CONFLICT,
+      );
     }
 
-    if (
-      order.status === ORDER_STATUS.DELIVERED &&
-      status === ORDER_STATUS.CREATED
-    ) {
-      throw new Error(
+    if (status === ORDER_STATUS.CREATED) {
+      throw new AppError(
         "No se puede reiniciar un pedido entregado",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
@@ -109,7 +110,7 @@ class ordersService {
   async deleteOrder(oid) {
     const order = await ordersRepositorie.getOrderById(oid);
     if (!order) {
-      throw new Error("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Pedido no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
 
     await ordersRepositorie.deleteOrder(oid);

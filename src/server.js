@@ -1,33 +1,19 @@
-import express from "express";
-import cors from "cors";
 import mongoose from "mongoose";
-
-import apiRouter from "./routes/index.js";
-
 import config from "./config/index.js";
+import app from "./app.js";
 
-const app = express();
+async function startServer() {
+  try {
+    await mongoose.connect(config.mongoUri);
+    console.log(`✅ MongoDB conectado (${config.nodeEnv})`);
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/api", apiRouter);
-
-const PORT = config.port;
-const MONGODB_URI = config.mongoUri;
-
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log("Conectado a MongoDB");
-    app.listen(PORT, () => {
-      console.log(`Servidor corriendo en puerto ${PORT}`);
+    app.listen(config.port, () => {
+      console.log(`✅ Servidor corriendo en puerto ${config.port}`);
     });
-  })
-  .catch((error) => {
-    console.error("Error al conectar con MongoDB:", error.message);
+  } catch (error) {
+    console.error("❌ Error al iniciar el servidor:", error.message);
     process.exit(1);
-  });
+  }
+}
 
-export default app;
+startServer();

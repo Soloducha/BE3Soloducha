@@ -1,11 +1,13 @@
 import usersRepositorie from "../repositories/users.repositories.js";
 import ordersServices from "./orders.services.js";
 import deliveriesRepositorie from "../repositories/deliveries.repositories.js";
-
+import AppError from "../utils/errors.js";
 import {
   USER_ROLES,
   HTTP_STATUS_CODES,
   DELIVERY_STATUS,
+  ORDER_STATUS,
+  ORDER_PRIORITY,
 } from "../constants/index.js";
 
 class deliveriesService {
@@ -16,7 +18,7 @@ class deliveriesService {
   async getDeliveryById(did) {
     const delivery = await deliveriesRepositorie.getDeliveryById(did);
     if (!delivery) {
-      throw new appError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
     }
     return delivery;
   }
@@ -24,34 +26,34 @@ class deliveriesService {
   async createDelivery(deliveryData) {
     const { order, driver, priority } = deliveryData;
     if (!order) {
-      throw new appError(
+      throw new AppError(
         "El pedido es obligatorio",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
     }
     if (!driver) {
-      throw new appError(
+      throw new AppError(
         "El repartidor es obligatorio",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
     }
 
-    const existingOrder = await ordersRepositorie.getOrderById(order);
+    const existingOrder = await ordersServices.getOrderById(order);
     if (!existingOrder) {
-      throw new appError("El pedido no existe", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("El pedido no existe", HTTP_STATUS_CODES.NOT_FOUND);
     }
 
     //llamo al repositorio y no al servicio para que no me devuelva "Usuario no encontrado", sino "Repartidor no econtrado"
     const existingDriver = await usersRepositorie.getUserById(driver);
     if (!existingDriver) {
-      throw new appError(
+      throw new AppError(
         "El repartidor no existe",
         HTTP_STATUS_CODES.NOT_FOUND,
       );
     }
 
     if (existingDriver.role !== USER_ROLES.DRIVER) {
-      throw new appError(
+      throw new AppError(
         "El usuario no tiene rol de repartidor",
         HTTP_STATUS_CODES.BAD_REQUEST,
         "Tiene el rol: ",
@@ -60,11 +62,11 @@ class deliveriesService {
     }
 
     if (existingOrder.status !== ORDER_STATUS.CREATED) {
-      throw new appError(
+      throw new AppError(
         "El pedido ya fue asignado o procesado",
         HTTP_STATUS_CODES.CONFLICT,
         "Status actual: ",
-        Order.status,
+        existingOrder.status,
       );
     }
 
@@ -85,11 +87,11 @@ class deliveriesService {
   async updateDeliveryStatus(did, status) {
     const delivery = await deliveriesRepositorie.getDeliveryById(did);
     if (!delivery) {
-      throw new appError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
     }
 
     if (delivery.status === DELIVERY_STATUS.DELIVERED) {
-      throw new appError(
+      throw new AppError(
         "La entrega ya fue completada",
         HTTP_STATUS_CODES.CONFLICT,
         "Status Actual: ",
@@ -107,7 +109,7 @@ class deliveriesService {
       );
     }
     const updatedDelivery = await deliveriesRepositorie.updateDeliveryStatus(
-      delivery.did,
+      delivery._id,
       delivery.status,
     );
 
@@ -119,7 +121,7 @@ class deliveriesService {
   async deleteDelivery(did) {
     const delivery = await deliveriesRepositorie.getDeliveryById(did);
     if (!delivery) {
-      throw new appError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Entrega no encontrada", HTTP_STATUS_CODES.NOT_FOUND);
     }
     const deletedDelivery = await deliveriesRepositorie.deleteDelivery(did);
     return deletedDelivery;

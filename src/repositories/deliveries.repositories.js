@@ -1,5 +1,4 @@
 import Delivery from "../models/delivery.model.js";
-import Product from "../models/product.model.js";
 
 class deliveriesRepositorie {
   async getAllDeliveries() {

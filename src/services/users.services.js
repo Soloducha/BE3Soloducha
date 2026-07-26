@@ -1,5 +1,5 @@
 import usersRepositorie from "../repositories/users.repositories.js";
-import appError from "../utils/errors.js";
+import AppError from "../utils/errors.js";
 import { USER_ROLES, HTTP_STATUS_CODES } from "../constants/index.js";
 
 class usersService {
@@ -10,7 +10,7 @@ class usersService {
   async getUserById(uid) {
     const user = await usersRepositorie.getUserById(uid);
     if (!user) {
-      throw new appError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
     return user;
   }
@@ -19,19 +19,19 @@ class usersService {
     const { firstName, lastName, email, password, role } = userData;
 
     if (!firstName || !lastName || !email || !password) {
-      throw new appError(
+      throw new AppError(
         "Faltan datos obligatorios",
         HTTP_STATUS_CODES.BAD_REQUEST,
       );
     }
 
     if (role === USER_ROLES.ADMIN) {
-      throw new appError("No puedes crear admin", HTTP_STATUS_CODES.FORBIDDEN);
+      throw new AppError("No puedes crear admin", HTTP_STATUS_CODES.FORBIDDEN);
     }
 
     const existingUser = await usersRepositorie.getUserByEmail(userData.email);
     if (existingUser) {
-      throw new appError(
+      throw new AppError(
         "El email ya está registrado",
         HTTP_STATUS_CODES.CONFLICT,
       );
@@ -44,7 +44,7 @@ class usersService {
   async updateUser(uid, userData) {
     const user = await usersRepositorie.getUserById(uid);
     if (!user) {
-      throw new appError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
     const updatedUser = await usersRepositorie.updateUser(uid, userData);
     return updatedUser;
@@ -53,7 +53,7 @@ class usersService {
   async deleteUser(uid) {
     const user = await usersRepositorie.getUserById(uid);
     if (!user) {
-      throw new appError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
+      throw new AppError("Usuario no encontrado", HTTP_STATUS_CODES.NOT_FOUND);
     }
     const deletedUser = await usersRepositorie.deleteUser(uid);
     return deletedUser;

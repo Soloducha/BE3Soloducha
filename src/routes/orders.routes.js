@@ -1,13 +1,5 @@
 import { Router } from "express";
-import Order from "../models/order.model.js";
-import User from "../models/user.model.js";
 import ordersController from "../controllers/orders.controller.js";
-
-import {
-  USER_ROLES,
-  ORDER_STATUS,
-  ORDER_PRIORITY,
-} from "../constants/index.js";
 
 const router = Router();
 // GET /api/orders

@@ -1,6 +1,4 @@
 import { Router } from "express";
-import User from "../models/user.model.js";
-import { USER_ROLES } from "../constants/index.js";
 import usersController from "../controllers/users.controller.js";
 
 const router = Router();

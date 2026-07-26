@@ -16,9 +16,18 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+  const status = err.statusCode || 500;
+  res.status(status).json({
+    status: err.status || "error",
+    message: err.message,
+  });
+});
+
 //404 error handler
 app.use((req, res) => {
-  res.status(404).json({ error: "Ruta no encontrado" });
+  res.status(404).json({ error: "Ruta no encontrada" });
 });
 
 export default app;

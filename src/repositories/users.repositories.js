@@ -15,6 +15,7 @@ class usersRepositorie {
   }
 
   async createUser(userData) {
+    const { firstName, lastName, email, password, role } = userData;
     return await User.create({
       firstName,
       lastName,
