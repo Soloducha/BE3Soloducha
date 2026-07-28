@@ -40,3 +40,5 @@ Icon?
 # Misc
 *.tgz
 .cache/
+
+.atl/
