@@ -1,12 +1,6 @@
 import ordersService from "../services/orders.services.js";
 import { HTTP_STATUS, HTTP_STATUS_CODES } from "../constants/index.js";
 
-// router.get("", ordersController.getAllOrders);
-// router.get("/:oid", ordersController.getOrderById);
-// router.post("", ordersController.createOrder);
-// router.patch("/:oid/status", ordersController.updateOrderStatus);
-// router.delete("/:oid", ordersController.deleteOrder);
-
 class ordersController {
   async getAllOrders(req, res, next) {
     try {

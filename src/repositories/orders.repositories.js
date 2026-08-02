@@ -1,6 +1,5 @@
 import Order from "../models/order.model.js";
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
-import AppError from "../utils/errors.js";
 
 class ordersRepositorie {
   async getAllOrders() {
@@ -30,7 +29,7 @@ class ordersRepositorie {
     );
 
     if (!order) {
-      throw new AppError("Pedido no encontrado");
+      return null;
     }
 
     return order;
@@ -40,7 +39,7 @@ class ordersRepositorie {
     const deletedOrder = await Order.findByIdAndDelete(oid);
 
     if (!deletedOrder) {
-      throw new AppError("Pedido no encontrado");
+      return null;
     }
 
     return deletedOrder;

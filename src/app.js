@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import apiRouter from "./routes/index.js";
+import {
+  errorHandler,
+  notFoundHandler,
+} from "./middleware/error.middleware.js";
 
 const app = express();
 
@@ -16,18 +20,21 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-  const status = err.statusCode || 500;
-  res.status(status).json({
-    status: err.status || "error",
-    message: err.message,
-  });
-});
+// // Global error handler
+// app.use((err, req, res, next) => {
+//   const status = err.statusCode || 500;
+//   res.status(status).json({
+//     status: err.status || "error",
+//     message: err.message,
+//   });
+// });
 
-//404 error handler
-app.use((req, res) => {
-  res.status(404).json({ error: "Ruta no encontrada" });
-});
+// //404 error handler
+// app.use((req, res) => {
+//   res.status(404).json({ error: "Ruta no encontrada" });
+// });
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

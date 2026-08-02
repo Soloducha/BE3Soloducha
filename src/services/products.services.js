@@ -1,6 +1,7 @@
 import productsRepositorie from "../repositories/products.repositories.js";
 import { PRODUCT_STATUS } from "../constants/index.js";
-import AppError from "../utils/errors.js";
+import { AppError } from "../utils/errors.js";
+import { ERROR_CODES } from "../constants/error.codes.js";
 
 class productsService {
   async getAllProducts() {
@@ -10,7 +11,7 @@ class productsService {
   async getProductById(pid) {
     const product = await productsRepositorie.getProductById(pid);
     if (!product) {
-      throw new AppError("Producto no encontrado", 404);
+      throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND, "Producto no encontrado");
     }
     return product;
   }
@@ -19,15 +20,18 @@ class productsService {
     const { name, description, price, stock, category, status } = productData;
 
     if (!name || price === undefined || stock === undefined) {
-      throw new AppError("Faltan datos obligatorios (name, price, stock)", 400);
+      throw new AppError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Faltan datos obligatorios (name, price, stock)",
+      );
     }
 
     if (price < 0) {
-      throw new AppError("El precio no puede ser negativo", 400);
+      throw new AppError(ERROR_CODES.VALIDATION_ERROR, "El precio no puede ser negativo");
     }
 
     if (stock < 0) {
-      throw new AppError("El stock no puede ser negativo", 400);
+      throw new AppError(ERROR_CODES.VALIDATION_ERROR, "El stock no puede ser negativo");
     }
 
     const newProduct = await productsRepositorie.createProduct({
@@ -48,17 +52,17 @@ class productsService {
   async updateProduct(pid, productData) {
     const product = await productsRepositorie.getProductById(pid);
     if (!product) {
-      throw new AppError("Producto no encontrado", 404);
+      throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND, "Producto no encontrado");
     }
 
     const { name, description, price, stock, category, status } = productData;
 
     if (price !== undefined && price < 0) {
-      throw new AppError("El precio no puede ser negativo", 400);
+      throw new AppError(ERROR_CODES.VALIDATION_ERROR, "El precio no puede ser negativo");
     }
 
     if (stock !== undefined && stock < 0) {
-      throw new AppError("El stock no puede ser negativo", 400);
+      throw new AppError(ERROR_CODES.VALIDATION_ERROR, "El stock no puede ser negativo");
     }
 
     if (name !== undefined) product.name = name;
@@ -85,7 +89,7 @@ class productsService {
   async deleteProduct(pid) {
     const product = await productsRepositorie.getProductById(pid);
     if (!product) {
-      throw new AppError("Producto no encontrado", 404);
+      throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND, "Producto no encontrado");
     }
     const deletedProduct = await productsRepositorie.deleteProduct(pid);
     return deletedProduct;

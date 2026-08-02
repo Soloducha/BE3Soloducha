@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const requiredEnvVars = ["PORT", "MONGO_URI", "JWT_SECRET"];
