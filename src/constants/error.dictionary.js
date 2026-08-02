@@ -49,6 +49,10 @@ export const errorDictionary = {
     statusCode: 400,
     message: "la cantidad de registros tiene que ser mayor a 0",
   },
+  [ERROR_CODES.MOCK_SOURCE_EMPTY]: {
+    statusCode: 400,
+    message: "No hay datos suficientes para generar los mocks solicitados",
+  },
   [ERROR_CODES.ROUTE_NOT_FOUND]: {
     statusCode: 404,
     message: "La ruta solicitada no existe",
