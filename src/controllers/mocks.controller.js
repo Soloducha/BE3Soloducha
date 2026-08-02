@@ -9,8 +9,7 @@ class MocksController {
    */
   async generateUsers(req, res, next) {
     try {
-      const count = Math.min(Math.max(parseInt(req.query.count) || 10, 1), 100);
-      const users = mocksService.generateMockUsers(count);
+      const users = mocksService.generateMockUsers(req.query.count);
 
       res.json({
         status: HTTP_STATUS.SUCCESS,
@@ -29,8 +28,7 @@ class MocksController {
    */
   async insertUsers(req, res, next) {
     try {
-      const count = Math.min(Math.max(parseInt(req.body.count) || 10, 1), 100);
-      const users = await mocksService.insertMockUsers(count);
+      const users = await mocksService.insertMockUsers(req.body.count);
 
       res.status(201).json({
         status: HTTP_STATUS.SUCCESS,

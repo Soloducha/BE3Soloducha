@@ -38,7 +38,7 @@ npm run dev
 | GET    | /api/mocks/users            | Generar usuarios mock (sin guardar)    |
 | POST   | /api/mocks/users            | Generar e insertar usuarios mock en DB |
 
-> Los endpoints de mock aceptan un parametro `count` (default: 10, max: 100). En GET se pasa como query string (`?count=15`), en POST va en el body (`{ "count": 15 }`).
+> Los endpoints de mock aceptan un parametro `count` (default: 10). En GET se pasa como query string (`?count=15`), en POST va en el body (`{ "count": 15 }`). Valores fuera del rango 1-100 (negativos, cero, no enteros o mayores a 100) devuelven HTTP 400 con el codigo `INVALID_MOCK_AMOUNT`.
 
 ## la logica se separa en service y repository
 
