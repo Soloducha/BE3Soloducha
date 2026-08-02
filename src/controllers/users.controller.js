@@ -23,7 +23,7 @@ class usersController {
   async createUser(req, res, next) {
     try {
       const newUser = await usersService.createUser(req.body);
-      res.json({ status: HTTP_STATUS.SUCCESS, payload: newUser });
+      res.status(201).json({ status: HTTP_STATUS.SUCCESS, payload: newUser });
     } catch (error) {
       next(error);
     }

@@ -23,7 +23,7 @@ class productsController {
   async createProduct(req, res, next) {
     try {
       const newProduct = await productsService.createProduct(req.body);
-      res.json({ status: HTTP_STATUS.SUCCESS, payload: newProduct });
+      res.status(201).json({ status: HTTP_STATUS.SUCCESS, payload: newProduct });
     } catch (error) {
       next(error);
     }

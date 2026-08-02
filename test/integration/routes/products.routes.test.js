@@ -77,7 +77,7 @@ describe("Products Routes - Integration", () => {
 
       const res = await request(app).post("/api/products").send(validProduct);
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.status).toBe("success");
       expect(res.body.payload.name).toBe("Camiseta Deportiva");
     });

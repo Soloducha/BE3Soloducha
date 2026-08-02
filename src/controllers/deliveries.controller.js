@@ -23,7 +23,7 @@ class deliveriesController {
   async createDelivery(req, res, next) {
     try {
       const newDelivery = await deliveriesService.createDelivery(req.body);
-      res.json({ status: HTTP_STATUS.SUCCESS, payload: newDelivery });
+      res.status(201).json({ status: HTTP_STATUS.SUCCESS, payload: newDelivery });
     } catch (error) {
       next(error);
     }

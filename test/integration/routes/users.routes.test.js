@@ -73,7 +73,7 @@ describe("Users Routes - Integration", () => {
 
       const res = await request(app).post("/api/users").send(validUser);
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.status).toBe("success");
       expect(res.body.payload.firstName).toBe("Juan");
     });
