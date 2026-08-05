@@ -1,5 +1,6 @@
 import mocksService from "../services/mocks.services.js";
 import { HTTP_STATUS } from "../constants/index.js";
+import { logger } from "../utils/logger.js";
 
 class MocksController {
   /**
@@ -158,6 +159,19 @@ class MocksController {
     } catch (error) {
       next(error);
     }
+  }
+
+  async generateLogs(req, res, next) {
+    logger.debug("test debug log");
+    logger.http("test http log");
+    logger.info("test info log");
+    logger.warn("test warning log");
+    logger.error("test error log");
+    logger.fatal("test fatal log");
+    res.status(200).json({
+      status: HTTP_STATUS.SUCCESS,
+      message: "Logs generados en los 6 niveles",
+    });
   }
 }
 

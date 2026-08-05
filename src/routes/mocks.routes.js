@@ -27,4 +27,7 @@ router.get("/deliveries", mocksController.generateDeliveries);
 // POST /api/mocks/deliveries — genera e inserta en MongoDB
 router.post("/deliveries", mocksController.insertDeliveries);
 
+// GET /api/mocks/logger - genera los diferentes tipos de logs
+router.get("/logger", mocksController.generateLogs);
+
 export default router;

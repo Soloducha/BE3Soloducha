@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 import config from "./config/index.js";
 import app from "./app.js";
+import { logger } from "./utils/logger.js";
 
 async function startServer() {
   try {
     await mongoose.connect(config.mongoUri);
-    console.log(`✅ MongoDB conectado (${config.nodeEnv})`);
+    logger.info(`✅ MongoDB conectado (${config.nodeEnv})`);
 
     app.listen(config.port, () => {
-      console.log(`✅ Servidor corriendo en puerto ${config.port}`);
+      logger.info(`✅ Servidor corriendo en puerto ${config.port}`);
     });
   } catch (error) {
-    console.error("❌ Error al iniciar el servidor:", error.message);
+    logger.fatal(error.message, { stack: error.stack });
     process.exit(1);
   }
 }

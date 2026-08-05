@@ -59,6 +59,6 @@ export const errorDictionary = {
   },
   [ERROR_CODES.INTERNAL_SERVER_ERROR]: {
     statusCode: 500,
-    message: "Los datos enviados no son validos",
+    message: "Error Interno del Servidor, mala nuestra :(",
   },
 };

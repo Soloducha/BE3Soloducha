@@ -12,6 +12,7 @@ import ordersRepositorie from "../repositories/orders.repositories.js";
 import productsRepositorie from "../repositories/products.repositories.js";
 import usersRepositorie from "../repositories/users.repositories.js";
 import { AppError } from "../utils/errors.js";
+import { logger } from "../utils/logger.js";
 
 const VALID_ROLES = Object.values(USER_ROLES);
 const VALID_PRODUCT_STATUSES = Object.values(PRODUCT_STATUS);
@@ -94,6 +95,7 @@ class MocksService {
       createdUsers.push(created);
     }
 
+    logger.info(`Se insertaron ${createdUsers.length} usuarios mock`);
     return createdUsers;
   }
 
@@ -135,6 +137,7 @@ class MocksService {
       createdProducts.push(created);
     }
 
+    logger.info(`Se insertaron ${createdProducts.length} productos mock`);
     return createdProducts;
   }
 
@@ -216,6 +219,7 @@ class MocksService {
       createdOrders.push(created);
     }
 
+    logger.info(`Se insertaron ${createdOrders.length} pedidos mock`);
     return createdOrders;
   }
 
@@ -277,6 +281,7 @@ class MocksService {
       createdDeliveries.push(created);
     }
 
+    logger.info(`Se insertaron ${createdDeliveries.length} entregas mock`);
     return createdDeliveries;
   }
 }

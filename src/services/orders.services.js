@@ -3,6 +3,7 @@ import usersRepositorie from "../repositories/users.repositories.js";
 import { USER_ROLES, ORDER_STATUS } from "../constants/index.js";
 import { AppError } from "../utils/errors.js";
 import { ERROR_CODES } from "../constants/error.codes.js";
+import { logger } from "../utils/logger.js";
 
 class ordersService {
   async getAllOrders() {
@@ -54,10 +55,10 @@ class ordersService {
       total,
     });
 
-    console.log(
+    logger.info(
       `[EMAIL SIMULADO] Enviando confirmacion al usuario ${customer}...`,
     );
-    console.log(
+    logger.info(
       `[EMAIL SIMULADO] Tu pedido ${newOrder._id} fue creado. Total: $${total}`,
     );
 
@@ -103,7 +104,7 @@ class ordersService {
       throw new AppError(ERROR_CODES.ORDER_NOT_FOUND, "Pedido no encontrado");
     }
 
-    console.log(`Pedido ${order._id} actualizado a estado: ${status}`);
+    logger.info(`Pedido ${order._id} actualizado a estado: ${status}`);
     return updatedOrder;
   }
 

@@ -3,6 +3,7 @@ import ordersServices from "./orders.services.js";
 import deliveriesRepositorie from "../repositories/deliveries.repositories.js";
 import { AppError } from "../utils/errors.js";
 import { ERROR_CODES } from "../constants/error.codes.js";
+import { logger } from "../utils/logger.js";
 import {
   USER_ROLES,
   DELIVERY_STATUS,
@@ -75,7 +76,7 @@ class deliveriesService {
 
     await ordersServices.updateOrderStatus(order, ORDER_STATUS.ASSIGNED);
 
-    console.log(`Entrega ${newDelivery._id} creada para el pedido ${order}`);
+    logger.info(`Entrega ${newDelivery._id} creada para el pedido ${order}`);
     return newDelivery;
   }
 
@@ -107,7 +108,7 @@ class deliveriesService {
       delivery.status,
     );
 
-    console.log(`Entrega ${delivery._id} actualizada a: ${status}`);
+    logger.info(`Entrega ${delivery._id} actualizada a: ${status}`);
 
     return updatedDelivery;
   }

@@ -14,7 +14,7 @@ const config = {
   mongoUri: process.env.MONGO_URI,
   jwtSecret: process.env.JWT_SECRET,
   nodeEnv: process.env.NODE_ENV || "development",
-  logLevel: process.env.LOG_LEVEL || "info",
+  //logLevel: process.env.LOG_LEVEL || "info",
 };
 
 export default config;
