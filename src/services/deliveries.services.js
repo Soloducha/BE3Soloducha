@@ -66,13 +66,13 @@ class deliveriesService {
       );
     }
 
-    const newDelivery = await deliveriesRepositorie.createDelivery({
+    const newDelivery = await deliveriesRepositorie.createDelivery(
       order,
       driver,
-      priority: priority || ORDER_PRIORITY.NORMAL,
-      status: DELIVERY_STATUS.ASSIGNED,
-      assignedAt: new Date(),
-    });
+      priority || ORDER_PRIORITY.NORMAL,
+      DELIVERY_STATUS.ASSIGNED,
+      new Date(),
+    );
 
     await ordersServices.updateOrderStatus(order, ORDER_STATUS.ASSIGNED);
 
@@ -94,19 +94,21 @@ class deliveriesService {
       );
     }
 
-    delivery.status = status;
+    const deliveredAt =
+      status === DELIVERY_STATUS.DELIVERED ? new Date() : null;
+
+    const updatedDelivery = await deliveriesRepositorie.updateDeliveryStatus(
+      delivery._id,
+      status,
+      deliveredAt,
+    );
 
     if (status === DELIVERY_STATUS.DELIVERED) {
-      delivery.deliveredAt = new Date();
       await ordersServices.updateOrderStatus(
         delivery.order,
         ORDER_STATUS.DELIVERED,
       );
     }
-    const updatedDelivery = await deliveriesRepositorie.updateDeliveryStatus(
-      delivery._id,
-      delivery.status,
-    );
 
     logger.info(`Entrega ${delivery._id} actualizada a: ${status}`);
 

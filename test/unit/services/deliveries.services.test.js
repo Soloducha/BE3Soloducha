@@ -124,13 +124,11 @@ describe("Deliveries Service", () => {
         validDelivery.driver,
       );
       expect(deliveriesRepositorie.createDelivery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          order: validDelivery.order,
-          driver: validDelivery.driver,
-          priority: ORDER_PRIORITY.NORMAL,
-          status: DELIVERY_STATUS.ASSIGNED,
-          assignedAt: expect.any(Date),
-        }),
+        validDelivery.order,
+        validDelivery.driver,
+        ORDER_PRIORITY.NORMAL,
+        DELIVERY_STATUS.ASSIGNED,
+        expect.any(Date),
       );
       expect(ordersServices.updateOrderStatus).toHaveBeenCalledWith(
         validDelivery.order,
@@ -147,9 +145,11 @@ describe("Deliveries Service", () => {
       await deliveriesService.createDelivery(deliveryWithPriority);
 
       expect(deliveriesRepositorie.createDelivery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          priority: deliveryWithPriority.priority,
-        }),
+        validDelivery.order,
+        validDelivery.driver,
+        deliveryWithPriority.priority,
+        DELIVERY_STATUS.ASSIGNED,
+        expect.any(Date),
       );
     });
 
@@ -226,6 +226,7 @@ describe("Deliveries Service", () => {
       expect(deliveriesRepositorie.updateDeliveryStatus).toHaveBeenCalledWith(
         mockDeliveryFromDB._id,
         DELIVERY_STATUS.INTRANSIT,
+        null,
       );
       expect(ordersServices.updateOrderStatus).not.toHaveBeenCalled();
     });
@@ -259,10 +260,12 @@ describe("Deliveries Service", () => {
 
     it("debería marcar la entrega como entregada y actualizar el pedido", async () => {
       const delivery = { ...mockDeliveryFromDB };
+      const persistedDeliveredAt = new Date("2026-07-28T10:00:00.000Z");
       deliveriesRepositorie.getDeliveryById.mockResolvedValue(delivery);
       deliveriesRepositorie.updateDeliveryStatus.mockResolvedValue({
         ...delivery,
         status: DELIVERY_STATUS.DELIVERED,
+        deliveredAt: persistedDeliveredAt,
       });
 
       const result = await deliveriesService.updateDeliveryStatus(
@@ -270,16 +273,48 @@ describe("Deliveries Service", () => {
         DELIVERY_STATUS.DELIVERED,
       );
 
-      expect(delivery.deliveredAt).toBeInstanceOf(Date);
+      expect(deliveriesRepositorie.updateDeliveryStatus).toHaveBeenCalledWith(
+        delivery._id,
+        DELIVERY_STATUS.DELIVERED,
+        expect.any(Date),
+      );
       expect(ordersServices.updateOrderStatus).toHaveBeenCalledWith(
         delivery.order,
         ORDER_STATUS.DELIVERED,
       );
-      expect(deliveriesRepositorie.updateDeliveryStatus).toHaveBeenCalledWith(
+      expect(result.status).toBe(DELIVERY_STATUS.DELIVERED);
+      expect(result.deliveredAt).toBe(persistedDeliveredAt);
+    });
+
+    it("debería persistir el deliveredAt en el mismo update que el status", async () => {
+      const delivery = { ...mockDeliveryFromDB };
+      deliveriesRepositorie.getDeliveryById.mockResolvedValue(delivery);
+
+      await deliveriesService.updateDeliveryStatus(
         delivery._id,
         DELIVERY_STATUS.DELIVERED,
       );
-      expect(result.status).toBe(DELIVERY_STATUS.DELIVERED);
+
+      const updateCall = deliveriesRepositorie.updateDeliveryStatus.mock.calls[0];
+      const deliveredAtArg = updateCall[2];
+      expect(deliveredAtArg).toBeInstanceOf(Date);
+      expect(updateCall[1]).toBe(DELIVERY_STATUS.DELIVERED);
+    });
+
+    it("debería actualizar el pedido solo después de que la entrega se persista", async () => {
+      const delivery = { ...mockDeliveryFromDB };
+      deliveriesRepositorie.getDeliveryById.mockResolvedValue(delivery);
+      deliveriesRepositorie.updateDeliveryStatus.mockRejectedValue(
+        new Error("update failed"),
+      );
+
+      await expect(
+        deliveriesService.updateDeliveryStatus(
+          delivery._id,
+          DELIVERY_STATUS.DELIVERED,
+        ),
+      ).rejects.toThrow("update failed");
+      expect(ordersServices.updateOrderStatus).not.toHaveBeenCalled();
     });
   });
 

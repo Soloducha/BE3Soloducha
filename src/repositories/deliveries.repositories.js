@@ -19,8 +19,12 @@ class deliveriesRepositorie {
     });
   }
 
-  async updateDeliveryStatus(did, status) {
-    return await Delivery.findByIdAndUpdate(did, status, { new: true });
+  async updateDeliveryStatus(did, status, deliveredAt = null) {
+    const update = { status };
+    if (deliveredAt) {
+      update.deliveredAt = deliveredAt;
+    }
+    return await Delivery.findByIdAndUpdate(did, update, { new: true });
   }
 
   async deleteDelivery(did) {
