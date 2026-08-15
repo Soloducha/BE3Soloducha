@@ -24,7 +24,10 @@ class deliveriesRepositorie {
     if (deliveredAt) {
       update.deliveredAt = deliveredAt;
     }
-    return await Delivery.findByIdAndUpdate(did, update, { new: true });
+    return await Delivery.findByIdAndUpdate(did, update, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   async deleteDelivery(did) {

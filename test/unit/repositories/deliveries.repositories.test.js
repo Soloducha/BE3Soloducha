@@ -61,7 +61,7 @@ describe("Deliveries Repository", () => {
       expect(Delivery.findByIdAndUpdate).toHaveBeenCalledWith(
         "delivery-id",
         { status: DELIVERY_STATUS.INTRANSIT },
-        { new: true },
+        { new: true, runValidators: true },
       );
     });
 
@@ -82,7 +82,7 @@ describe("Deliveries Repository", () => {
       expect(Delivery.findByIdAndUpdate).toHaveBeenCalledWith(
         "delivery-id",
         { status: DELIVERY_STATUS.DELIVERED, deliveredAt },
-        { new: true },
+        { new: true, runValidators: true },
       );
       expect(result.deliveredAt).toBe(deliveredAt);
     });
