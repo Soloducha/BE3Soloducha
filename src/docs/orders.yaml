@@ -3,7 +3,7 @@ paths:
     get:
       summary: obtener todas las ordenes
       tags:
-        - Order
+        - Orders
       responses:
         "200":
           description: lista de ordenes obtenida correctamente
@@ -21,7 +21,7 @@ paths:
     post:
       summary: crear una orden
       tags:
-        - Order
+        - Orders
       requestBody:
         required: true
         content:
@@ -64,7 +64,7 @@ paths:
     get:
       summary: obtener orden por _id
       tags:
-        - Order
+        - Orders
       parameters:
         - name: oid
           in: path
@@ -95,7 +95,7 @@ paths:
     delete:
       summary: eliminar una orden
       tags:
-        - Order
+        - Orders
       parameters:
         - name: oid
           in: path
@@ -127,7 +127,7 @@ paths:
     patch:
       summary: actualizar el estado de una orden
       tags:
-        - Order
+        - Orders
       parameters:
         - name: oid
           in: path

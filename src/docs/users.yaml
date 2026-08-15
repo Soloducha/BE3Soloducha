@@ -3,7 +3,7 @@ paths:
     get:
       summary: obtener todos los usuarios
       tags:
-        - User
+        - Users
       responses:
         "200":
           description: lista de usuarios obtenida correctamente
@@ -21,7 +21,7 @@ paths:
     post:
       summary: crear un usuario
       tags:
-        - User
+        - Users
       requestBody:
         required: true
         content:
@@ -64,7 +64,7 @@ paths:
     get:
       summary: obtener user por _id
       tags:
-        - User
+        - Users
       parameters:
         - name: uid
           in: path
@@ -95,7 +95,7 @@ paths:
     put:
       summary: actualizar un usuario
       tags:
-        - User
+        - Users
       parameters:
         - name: uid
           in: path
@@ -138,7 +138,7 @@ paths:
     delete:
       summary: eliminar un usuario
       tags:
-        - User
+        - Users
       parameters:
         - name: uid
           in: path

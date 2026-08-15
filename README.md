@@ -12,6 +12,27 @@ npm install
 npm run dev
 ```
 
+## Documentacion Swagger
+
+La API expone **Swagger UI** en:
+
+- **URL**: http://localhost:8080/api/docs
+
+Desde ahi se puede consultar y probar todos los endpoints documentados, organizados por tags:
+
+| Tag        | Que documenta                                                      |
+| ---------- | ------------------------------------------------------------------ |
+| Users      | CRUD de usuarios                                                   |
+| Products   | CRUD de productos                                                  |
+| Orders     | CRUD de pedidos y actualizacion de estado                          |
+| Deliveries | CRUD de entregas y actualizacion de estado                         |
+| Mocks      | Generacion de datos de prueba, con y sin persistencia              |
+| Logger     | Endpoint de validacion del logger (no es funcionalidad de negocio) |
+
+La configuracion de Swagger esta separada de la logica de rutas: los archivos viven en `src/docs/` (swagger.config.js + un archivo YAML por modulo) y se sirven en `/api/docs`.
+
+> Nota: la API aun no tiene autenticacion real. Swagger UI se sirve abierta en `/api/docs`; esta pendiente protegerla con basic auth.
+
 ## Endpoints
 
 | Metodo | Ruta                        | Descripcion                             |
@@ -67,10 +88,10 @@ La API usa **Winston** como sistema de logging centralizado, con rotacion de arc
 Para verificar que todos los niveles funcionan: (se utiliza localhost de ejemplo)
 
 ```bash
-curl http://localhost:8000/api/mocks/logger
+curl http://localhost:8080/api/mocks/logger
 ```
 
-Genera un log por nivel (debug, http, info, warn, error y fatal) en consola. Los niveles `error` y `fatal` tambien quedan persistidos en el archivo de logs.
+Este endpoint es una **herramienta de validacion del logger**, no una funcionalidad de negocio. Genera un log por nivel (debug, http, info, warn, error y fatal) en consola. Los niveles `error` y `fatal` tambien quedan persistidos en el archivo de logs.
 
 ### Archivos de logs
 

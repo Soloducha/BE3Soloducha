@@ -3,7 +3,7 @@ paths:
     get:
       summary: obtener todos los productos
       tags:
-        - Product
+        - Products
       responses:
         "200":
           description: lista de productos obtenida correctamente
@@ -21,7 +21,7 @@ paths:
     post:
       summary: crear un producto
       tags:
-        - Product
+        - Products
       requestBody:
         required: true
         content:
@@ -54,7 +54,7 @@ paths:
     get:
       summary: obtener producto por _id
       tags:
-        - Product
+        - Products
       parameters:
         - name: pid
           in: path
@@ -85,7 +85,7 @@ paths:
     put:
       summary: actualizar un producto
       tags:
-        - Product
+        - Products
       parameters:
         - name: pid
           in: path
@@ -128,7 +128,7 @@ paths:
     delete:
       summary: eliminar un producto
       tags:
-        - Product
+        - Products
       parameters:
         - name: pid
           in: path

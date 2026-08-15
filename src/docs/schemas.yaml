@@ -1,5 +1,18 @@
 components:
   schemas:
+    SuccessResponse:
+      type: object
+      description: >-
+        Envelope base de respuesta exitosa: todas las respuestas 2xx siguen
+        esta forma (status "success" + payload). Los schemas UserResponse,
+        OrderResponse, etc. son variantes concretas de este envelope.
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          description: dato o lista devuelto por el endpoint
     ErrorResponse:
       type: object
       description: >-

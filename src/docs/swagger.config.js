@@ -12,8 +12,21 @@ const swaggerOptions = {
     info: {
       title: "shipnow",
       version: "1.0.0",
-      description: "Documentación de la API de shipnow",
+      description:
+        "Documentación de la API de shipnow. Permite consultar y probar los endpoints de usuarios, productos, pedidos, entregas, mocks y logger.",
     },
+    tags: [
+      { name: "Users", description: "Gestión de usuarios" },
+      { name: "Products", description: "Gestión de productos" },
+      { name: "Orders", description: "Gestión de pedidos y actualización de estado" },
+      { name: "Deliveries", description: "Gestión de entregas y actualización de estado" },
+      { name: "Mocks", description: "Generación de datos de prueba (con y sin persistencia)" },
+      {
+        name: "Logger",
+        description:
+          "Herramienta de validación del logger, no una funcionalidad de negocio",
+      },
+    ],
     servers: [
       {
         url: `http://localhost:${config.port}`,

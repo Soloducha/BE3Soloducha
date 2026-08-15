@@ -3,7 +3,7 @@ paths:
     get:
       summary: generar mocks de usuarios (sin persistir)
       tags:
-        - Mock
+        - Mocks
       parameters:
         - name: count
           in: query
@@ -37,7 +37,7 @@ paths:
     post:
       summary: generar y persistir mocks de usuarios
       tags:
-        - Mock
+        - Mocks
       requestBody:
         required: true
         content:
@@ -68,7 +68,7 @@ paths:
     get:
       summary: generar mocks de productos (sin persistir)
       tags:
-        - Mock
+        - Mocks
       parameters:
         - name: count
           in: query
@@ -102,7 +102,7 @@ paths:
     post:
       summary: generar y persistir mocks de productos
       tags:
-        - Mock
+        - Mocks
       requestBody:
         required: true
         content:
@@ -133,7 +133,7 @@ paths:
     get:
       summary: generar mocks de ordenes (sin persistir)
       tags:
-        - Mock
+        - Mocks
       parameters:
         - name: count
           in: query
@@ -167,7 +167,7 @@ paths:
     post:
       summary: generar y persistir mocks de ordenes
       tags:
-        - Mock
+        - Mocks
       requestBody:
         required: true
         content:
@@ -198,7 +198,7 @@ paths:
     get:
       summary: generar mocks de entregas (sin persistir)
       tags:
-        - Mock
+        - Mocks
       parameters:
         - name: count
           in: query
@@ -232,7 +232,7 @@ paths:
     post:
       summary: generar y persistir mocks de entregas
       tags:
-        - Mock
+        - Mocks
       requestBody:
         required: true
         content:
@@ -261,9 +261,11 @@ paths:
 
   /api/mocks/logger:
     get:
-      summary: generar logs de prueba en los 6 niveles
+      summary: >-
+        generar logs de prueba en los 6 niveles. Es una herramienta de
+        validacion del logger, no una funcionalidad de negocio.
       tags:
-        - Mock
+        - Logger
       responses:
         "200":
           description: logs generados correctamente
