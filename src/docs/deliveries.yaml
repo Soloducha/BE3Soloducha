@@ -1,0 +1,176 @@
+paths:
+  /api/deliveries:
+    get:
+      summary: obtener todas las entregas
+      tags:
+        - Delivery
+      responses:
+        "200":
+          description: lista de entregas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryListResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: crear una entrega
+      tags:
+        - Delivery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeliveryInput"
+      responses:
+        "201":
+          description: entrega creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+        "400":
+          description: >-
+            falta el pedido, falta el repartidor o el usuario no tiene rol de
+            repartidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: el pedido no existe o el repartidor no existe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: el pedido ya fue asignado o procesado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/deliveries/{did}:
+    get:
+      summary: obtener entrega por _id
+      tags:
+        - Delivery
+      parameters:
+        - name: did
+          in: path
+          required: true
+          description: id de la entrega
+          schema:
+            type: string
+      responses:
+        "200":
+          description: entrega obtenida correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+        "404":
+          description: entrega no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: eliminar una entrega
+      tags:
+        - Delivery
+      parameters:
+        - name: did
+          in: path
+          required: true
+          description: id de la entrega
+          schema:
+            type: string
+      responses:
+        "200":
+          description: entrega eliminada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+        "404":
+          description: entrega no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/deliveries/{did}/status:
+    patch:
+      summary: actualizar el estado de una entrega
+      tags:
+        - Delivery
+      parameters:
+        - name: did
+          in: path
+          required: true
+          description: id de la entrega
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDeliveryStatusInput"
+      responses:
+        "200":
+          description: estado actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+        "400":
+          description: 'el status no es valido (ej: "cancelled" no esta en el enum del modelo)'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: entrega no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: la entrega ya fue completada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

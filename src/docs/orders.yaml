@@ -1,0 +1,176 @@
+paths:
+  /api/orders:
+    get:
+      summary: obtener todas las ordenes
+      tags:
+        - Order
+      responses:
+        "200":
+          description: lista de ordenes obtenida correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderListResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: crear una orden
+      tags:
+        - Order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderInput"
+      responses:
+        "201":
+          description: orden creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOrderResponse"
+        "400":
+          description: falta el cliente, faltan los items o falta la direccion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: los repartidores no pueden crear pedidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/orders/{oid}:
+    get:
+      summary: obtener orden por _id
+      tags:
+        - Order
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: id de la orden
+          schema:
+            type: string
+      responses:
+        "200":
+          description: orden obtenida correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "404":
+          description: orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: eliminar una orden
+      tags:
+        - Order
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: id de la orden
+          schema:
+            type: string
+      responses:
+        "200":
+          description: orden eliminada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDeleteResponse"
+        "404":
+          description: orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/orders/{oid}/status:
+    patch:
+      summary: actualizar el estado de una orden
+      tags:
+        - Order
+      parameters:
+        - name: oid
+          in: path
+          required: true
+          description: id de la orden
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusInput"
+      responses:
+        "200":
+          description: estado actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "400":
+          description: >-
+            el estado es obligatorio, no se puede reiniciar un pedido
+            entregado, o el status no es valido (fuera del enum)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: el pedido ya fue entregado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

@@ -1,0 +1,704 @@
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: >-
+        Respuesta de error estandar de la API. `status` es "fail" para errores
+        4xx y "error" para errores 5xx.
+      properties:
+        status:
+          type: string
+          example: fail
+        error:
+          type: string
+          example: USER_NOT_FOUND
+        message:
+          type: string
+          example: "Usuario no encontrado"
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Ana
+        lastName:
+          type: string
+          example: Lopez
+        email:
+          type: string
+          format: email
+          example: lopez@email.com
+        password:
+          type: string
+          format: password
+          example: "********"
+        role:
+          type: string
+          enum: [admin, customer, driver, store]
+          example: customer
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reference:
+                type: string
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    UserResponse:
+      type: object
+      description: Envelope de respuesta exitosa con un solo usuario
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: "#/components/schemas/User"
+    UserListResponse:
+      type: object
+      description: Envelope de respuesta exitosa con lista de usuarios
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+    CreateUserInput:
+      type: object
+      description: >-
+        Cuerpo para crear un usuario. `role` es opcional (default "customer") y
+        no se permite "admin".
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          example: Ana
+        lastName:
+          type: string
+          example: Lopez
+        email:
+          type: string
+          format: email
+          example: lopez@email.com
+        password:
+          type: string
+          format: password
+          example: "********"
+        role:
+          type: string
+          enum: [admin, customer, driver, store]
+          example: customer
+    UpdateUserInput:
+      type: object
+      description: >-
+        Cuerpo para actualizar un usuario. Todos los campos son opcionales; se
+        actualizan solo los enviados.
+      properties:
+        firstName:
+          type: string
+          example: Ana
+        lastName:
+          type: string
+          example: Lopez
+        email:
+          type: string
+          format: email
+          example: lopez@email.com
+        password:
+          type: string
+          format: password
+          example: "********"
+        role:
+          type: string
+          enum: [admin, customer, driver, store]
+          example: customer
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Cafe especial
+        description:
+          type: string
+          example: Granos tostados de origen colombiano
+        price:
+          type: number
+          minimum: 0
+          example: 12000
+        stock:
+          type: number
+          minimum: 0
+          example: 25
+        category:
+          type: string
+          example: bebidas
+        status:
+          type: string
+          enum: [available, out_of_stock]
+          example: available
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    ProductResponse:
+      type: object
+      description: Envelope de respuesta exitosa con un solo producto
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: "#/components/schemas/Product"
+    ProductListResponse:
+      type: object
+      description: Envelope de respuesta exitosa con lista de productos
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+    CreateProductInput:
+      type: object
+      description: >-
+        Cuerpo para crear un producto. `name`, `price` y `stock` son
+        obligatorios. Si `stock` es 0 el `status` se fuerza a "out_of_stock"
+        sin importar lo enviado.
+      required:
+        - name
+        - price
+        - stock
+      properties:
+        name:
+          type: string
+          example: Cafe especial
+        description:
+          type: string
+          example: Granos tostados de origen colombiano
+        price:
+          type: number
+          minimum: 0
+          example: 12000
+        stock:
+          type: number
+          minimum: 0
+          example: 25
+        category:
+          type: string
+          example: bebidas
+        status:
+          type: string
+          enum: [available, out_of_stock]
+          example: available
+    UpdateProductInput:
+      type: object
+      description: >-
+        Cuerpo para actualizar un producto. Todos los campos son opcionales. Si
+        llega `stock`, el `status` se recalcula (0 -> "out_of_stock"); el
+        `status` enviado solo se aplica cuando `stock` es mayor a 0.
+      properties:
+        name:
+          type: string
+          example: Cafe especial
+        description:
+          type: string
+          example: Granos tostados de origen colombiano
+        price:
+          type: number
+          minimum: 0
+          example: 12000
+        stock:
+          type: number
+          minimum: 0
+          example: 25
+        category:
+          type: string
+          example: bebidas
+        status:
+          type: string
+          enum: [available, out_of_stock]
+          example: available
+    OrderItem:
+      type: object
+      description: Item dentro de un pedido
+      properties:
+        name:
+          type: string
+          example: Cafe especial
+        quantity:
+          type: number
+          minimum: 1
+          example: 2
+        price:
+          type: number
+          minimum: 0
+          example: 12000
+    Order:
+      type: object
+      properties:
+        customer:
+          type: string
+          description: id del usuario (ref User)
+          example: 507f1f77bcf86cd799439011
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: Av. Siempre Viva 742, CABA
+        total:
+          type: number
+          example: 24000
+        status:
+          type: string
+          enum:
+            - pending
+            - in_progress
+            - delivered
+            - cancelled
+            - in_transit
+            - picked_up
+            - assigned
+            - created
+          example: created
+        priority:
+          type: string
+          enum: [low, normal, high]
+          example: normal
+        delivery:
+          type: string
+          nullable: true
+          description: id de la entrega asociada (ref Delivery)
+          example: null
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    OrderResponse:
+      type: object
+      description: Envelope de respuesta exitosa con una sola orden
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: "#/components/schemas/Order"
+    OrderListResponse:
+      type: object
+      description: Envelope de respuesta exitosa con lista de ordenes
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+    CreateOrderInput:
+      type: object
+      description: >-
+        Cuerpo para crear un pedido. `total` y `status` no se reciben: el
+        service calcula el total (suma de quantity x price) y fuerza status
+        "created".
+      required:
+        - customer
+        - items
+        - deliveryAddress
+      properties:
+        customer:
+          type: string
+          description: id del usuario (ref User)
+          example: 507f1f77bcf86cd799439011
+        items:
+          type: array
+          minItems: 1
+          description: no puede estar vacio
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: Av. Siempre Viva 742, CABA
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal
+          example: normal
+    CreateOrderResponse:
+      type: object
+      description: Envelope de respuesta exitosa al crear un pedido
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            order:
+              $ref: "#/components/schemas/Order"
+            shippingCost:
+              type: number
+              description: costo de envio calculado (suma de quantity x 10)
+              example: 20
+            message:
+              type: string
+              example: "Pedido creado y email enviado"
+    UpdateOrderStatusInput:
+      type: object
+      description: Cuerpo para actualizar el estado de un pedido
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - in_progress
+            - delivered
+            - cancelled
+            - in_transit
+            - picked_up
+            - assigned
+            - created
+          example: in_transit
+    OrderDeleteResponse:
+      type: object
+      description: Envelope de respuesta exitosa al eliminar una orden
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Pedido eliminado correctamente"
+    Delivery:
+      type: object
+      properties:
+        order:
+          type: string
+          description: id del pedido (ref Order)
+          example: 507f1f77bcf86cd799439011
+        driver:
+          type: string
+          nullable: true
+          description: id del repartidor (ref User)
+          example: 507f1f77bcf86cd799439011
+        status:
+          type: string
+          enum: [pending, assigned, in_transit, delivered]
+          example: assigned
+        priority:
+          type: string
+          enum: [low, normal, high]
+          example: normal
+        assignedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2026-08-15T14:00:00.000Z"
+        deliveredAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    DeliveryResponse:
+      type: object
+      description: Envelope de respuesta exitosa con una sola entrega
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          $ref: "#/components/schemas/Delivery"
+    DeliveryListResponse:
+      type: object
+      description: Envelope de respuesta exitosa con lista de entregas
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/Delivery"
+    CreateDeliveryInput:
+      type: object
+      description: >-
+        Cuerpo para crear una entrega. `order` y `driver` son obligatorios. El
+        service fuerza status "assigned" y setea `assignedAt`; el status no se
+        recibe por body.
+      required:
+        - order
+        - driver
+      properties:
+        order:
+          type: string
+          description: id del pedido (ref Order). Debe estar en status "created"
+          example: 507f1f77bcf86cd799439011
+        driver:
+          type: string
+          description: id del usuario con rol "driver" (ref User)
+          example: 507f1f77bcf86cd799439011
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal
+          example: normal
+    UpdateDeliveryStatusInput:
+      type: object
+      description: >-
+        Cuerpo para actualizar el estado de una entrega. `status` va como
+        objeto (no pelado). "cancelled" no es aceptado por el modelo: si se
+        envia, responde 400 (VALIDATION_ERROR).
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [pending, assigned, in_transit, delivered]
+          example: in_transit
+    MockCountInput:
+      type: object
+      description: >-
+        Cuerpo para generar mocks. `count` es opcional (default 10); debe ser
+        un entero entre 1 y 100.
+      properties:
+        count:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+          example: 10
+    MockUser:
+      type: object
+      description: >-
+        Usuario mock generado. En GET no esta persistido (sin _id); en POST se
+        persiste y agrega _id, createdAt y updatedAt.
+      properties:
+        firstName:
+          type: string
+          example: Ana
+        lastName:
+          type: string
+          example: Lopez
+        email:
+          type: string
+          format: email
+          example: lopez@email.com
+        password:
+          type: string
+          format: password
+          example: "********"
+        role:
+          type: string
+          enum: [admin, customer, driver, store]
+          example: customer
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reference:
+                type: string
+    MockProduct:
+      type: object
+      description: >-
+        Producto mock generado. En GET no esta persistido (sin _id); en POST se
+        persiste y agrega _id, createdAt y updatedAt.
+      properties:
+        name:
+          type: string
+          example: Cafe especial
+        description:
+          type: string
+          example: Granos tostados de origen colombiano
+        price:
+          type: number
+          example: 12000
+        stock:
+          type: number
+          example: 25
+        category:
+          type: string
+          example: bebidas
+        status:
+          type: string
+          enum: [available, out_of_stock]
+          example: available
+    MockOrder:
+      type: object
+      description: >-
+        Orden mock generada. En GET no esta persistida (sin _id); en POST se
+        persiste y agrega _id, createdAt y updatedAt.
+      properties:
+        customer:
+          type: string
+          description: id de un usuario existente (ref User)
+          example: 507f1f77bcf86cd799439011
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: Av. Siempre Viva 742, CABA
+        total:
+          type: number
+          example: 24000
+        status:
+          type: string
+          example: created
+        priority:
+          type: string
+          enum: [low, normal, high]
+          example: normal
+    MockDelivery:
+      type: object
+      description: >-
+        Entrega mock generada. En GET no esta persistida (sin _id); en POST se
+        persiste y agrega _id, createdAt y updatedAt.
+      properties:
+        order:
+          type: string
+          description: id de una orden existente (ref Order)
+          example: 507f1f77bcf86cd799439011
+        driver:
+          type: string
+          nullable: true
+          description: id de un usuario (puede ser null si no hay usuarios)
+          example: null
+        status:
+          type: string
+          example: pending
+        priority:
+          type: string
+          enum: [low, normal, high]
+          example: normal
+        assignedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+    MockUsersResponse:
+      type: object
+      description: Envelope de respuesta de mocks de usuarios
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/MockUser"
+        total:
+          type: integer
+          description: cantidad de mocks generados
+          example: 10
+    MockProductsResponse:
+      type: object
+      description: Envelope de respuesta de mocks de productos
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/MockProduct"
+        total:
+          type: integer
+          description: cantidad de mocks generados
+          example: 10
+    MockOrdersResponse:
+      type: object
+      description: Envelope de respuesta de mocks de ordenes
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/MockOrder"
+        total:
+          type: integer
+          description: cantidad de mocks generados
+          example: 10
+    MockDeliveriesResponse:
+      type: object
+      description: Envelope de respuesta de mocks de entregas
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/MockDelivery"
+        total:
+          type: integer
+          description: cantidad de mocks generados
+          example: 10
+    MockLoggerResponse:
+      type: object
+      description: Respuesta del endpoint de logs de prueba
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: "Logs generados en los 6 niveles"

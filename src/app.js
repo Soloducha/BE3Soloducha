@@ -6,6 +6,8 @@ import {
   notFoundHandler,
 } from "./middleware/error.middleware.js";
 import { reqLogger } from "./middleware/requestLogger.js";
+import { swaggerSpec } from "./docs/swagger.config.js";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 
@@ -21,6 +23,11 @@ app.use("/api", apiRouter);
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
+
+//Swagger UI
+//TODO: proteger /api/docs con basic auth cuando se implemente
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 //Manejo de errores
 app.use(notFoundHandler);
 app.use(errorHandler);

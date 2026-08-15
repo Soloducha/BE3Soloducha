@@ -1,0 +1,279 @@
+paths:
+  /api/mocks/users:
+    get:
+      summary: generar mocks de usuarios (sin persistir)
+      tags:
+        - Mock
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: cantidad de usuarios a generar (entero entre 1 y 100, default 10)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: mocks generados correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockUsersResponse"
+        "400":
+          description: cantidad invalida (0, negativa, mayor a 100 o no numerica)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: generar y persistir mocks de usuarios
+      tags:
+        - Mock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MockCountInput"
+      responses:
+        "201":
+          description: mocks persistidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockUsersResponse"
+        "400":
+          description: cantidad invalida (0, negativa, mayor a 100 o no numerica)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/mocks/products:
+    get:
+      summary: generar mocks de productos (sin persistir)
+      tags:
+        - Mock
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: cantidad de productos a generar (entero entre 1 y 100, default 10)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: mocks generados correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockProductsResponse"
+        "400":
+          description: cantidad invalida (0, negativa, mayor a 100 o no numerica)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: generar y persistir mocks de productos
+      tags:
+        - Mock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MockCountInput"
+      responses:
+        "201":
+          description: mocks persistidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockProductsResponse"
+        "400":
+          description: cantidad invalida (0, negativa, mayor a 100 o no numerica)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/mocks/orders:
+    get:
+      summary: generar mocks de ordenes (sin persistir)
+      tags:
+        - Mock
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: cantidad de ordenes a generar (entero entre 1 y 100, default 10)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: mocks generados correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockOrdersResponse"
+        "400":
+          description: cantidad invalida o no hay usuarios para generar las ordenes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: generar y persistir mocks de ordenes
+      tags:
+        - Mock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MockCountInput"
+      responses:
+        "201":
+          description: mocks persistidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockOrdersResponse"
+        "400":
+          description: cantidad invalida o no hay usuarios para generar las ordenes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/mocks/deliveries:
+    get:
+      summary: generar mocks de entregas (sin persistir)
+      tags:
+        - Mock
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: cantidad de entregas a generar (entero entre 1 y 100, default 10)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: mocks generados correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockDeliveriesResponse"
+        "400":
+          description: cantidad invalida o no hay ordenes para generar las entregas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: generar y persistir mocks de entregas
+      tags:
+        - Mock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MockCountInput"
+      responses:
+        "201":
+          description: mocks persistidos correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockDeliveriesResponse"
+        "400":
+          description: cantidad invalida o no hay ordenes para generar las entregas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/mocks/logger:
+    get:
+      summary: generar logs de prueba en los 6 niveles
+      tags:
+        - Mock
+      responses:
+        "200":
+          description: logs generados correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MockLoggerResponse"
+        "500":
+          description: error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
