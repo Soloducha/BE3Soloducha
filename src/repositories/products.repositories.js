@@ -23,7 +23,10 @@ class productsRepositorie {
   }
 
   async updateProduct(pid, productData) {
-    return Product.findByIdAndUpdate(pid, productData, { new: true });
+    return Product.findByIdAndUpdate(pid, productData, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   async deleteProduct(pid) {
