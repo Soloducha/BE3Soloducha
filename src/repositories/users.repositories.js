@@ -26,7 +26,10 @@ class usersRepositorie {
   }
 
   async updateUser(uid, userData) {
-    return User.findByIdAndUpdate(uid, userData, { new: true });
+    return User.findByIdAndUpdate(uid, userData, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   async deleteUser(uid) {
