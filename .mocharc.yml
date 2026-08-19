@@ -1,0 +1,17 @@
+# ── Mocha config (ESM + Mongoose integration) ──
+exit: true
+timeout: 15000
+retries: 0
+
+# Carga .env.test antes de cualquier import ESM
+require: test/env-setup.cjs
+
+# Inicio (connect / beforeEach cleanup / disconnect)
+file: test/setup.js
+
+# Solo los tests funcionales (los test realizados con Jest quedan en integration/ y unit/)
+spec: "test/functional/**/*.test.js"
+
+# Node flags para ESM en Mocha 8.x
+node-option:
+  - "experimental-modules"

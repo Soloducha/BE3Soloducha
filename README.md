@@ -107,3 +107,79 @@ Los errores (niveles `error` y `fatal`) se guardan en la carpeta `logs/` (archiv
 En Repository solo tengo que cómo obtener y guardar datos.
 y en Service lo que tengo qué hacer con esos datos según las reglas del negocio.
 No puede haber logica del negocio en el repository.
+
+## Testing
+
+### Herramientas
+
+| Herramienta   | Rol                                                          |
+| ------------- | ------------------------------------------------------------ |
+| **Mocha**     | Organizacion y ejecucion de tests                            |
+| **Chai**      | Aserciones (expect)                                          |
+| **Supertest** | Peticiones HTTP contra la app Express                        |
+| **Jest**      | Tests unitarios y de integracion con mocks (suite existente) |
+
+### Tipos de tests
+
+| Tipo                    | Directorio          | Que cubre                           | DB                  |
+| ----------------------- | ------------------- | ----------------------------------- | ------------------- |
+| **Funcionales (Mocha)** | `test/functional/`  | Endpoints reales contra MongoDB     | DB de test separada |
+| **Unitarios (Jest)**    | `test/unit/`        | Services con repositorios mockeados | Mock                |
+| **Integracion (Jest)**  | `test/integration/` | Rutas con repositorios mockeados    | Mock                |
+
+### Modulos cubiertos (Mocha/Chai/Supertest)
+
+| Archivo            | Modulos cubiertos                                        |
+| ------------------ | -------------------------------------------------------- |
+| `users.test.js`    | GET, GET/:id, POST (201, 400, 403, 409)                  |
+| `products.test.js` | GET, GET/:id, POST (201, 400, precio/stock negativo)     |
+| `orders.test.js`   | GET, GET/:id, POST, PATCH status, DELETE                 |
+| `mocks.test.js`    | GET/POST users, products, orders, logger, count invalido |
+| `swagger.test.js`  | Health check, Swagger UI, Swagger JSON                   |
+| `errors.test.js`   | Ruta inexistente 404, formato de error consistente       |
+
+### Requisitos previos
+
+1. **MongoDB** corriendo localmente en el puerto default (27017)
+2. Node.js >= 18
+
+### Variables de entorno de testing
+
+El archivo `.env.test` define las variables para los tests funcionales (Mocha):
+
+```bash
+PORT=8080
+MONGO_URI=mongodb://localhost:27017/basededatos_test   # DB dedicada, NO usa la de desarrollo
+NODE_ENV=test
+JWT_SECRET=test-secret-key-for-testing
+```
+
+> **Importante**: la DB de test (`basededatos_test`) es diferente a la de desarrollo (`basededatos`). Los datos generados por los tests se limpian automaticamente antes y despues de cada prueba.
+
+### Como ejecutar
+
+```bash
+# Tests funcionales (Mocha + Chai + Supertest — contra MongoDB real)
+npm run test:mocha
+
+# Tests unitarios e integracion (Jest — con mocks, no necesita DB)
+npm run test
+```
+
+### Estructura de un test
+
+Los tests funcionales siguen este patron:
+
+1. **before**: conexion a la DB de test
+2. **beforeEach**: limpieza de todas las colecciones (aislamiento total)
+3. **Tests**: crean sus propios datos, hacen peticiones HTTP, validan status + formato
+4. **after**: limpieza final + desconexion
+
+Cada test valida no solo que el endpoint responde, sino la **estructura del body** y sus **propiedades importantes** (status, payload, error codes, message).
+
+### Estrategia de datos de prueba
+
+- Los datos se crean **dentro de cada test** usando helpers (`createTestUser`, `createTestProduct`, etc.)
+- Emails y nombres usan `Date.now()`
+- No depende de datos cargados manualmente ni del orden de ejecucion
+- La limpieza (`beforeEach` en `test/setup.js`) garantiza aislamiento entre tests
