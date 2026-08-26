@@ -57,6 +57,22 @@ export const errorDictionary = {
     statusCode: 404,
     message: "La ruta solicitada no existe",
   },
+  [ERROR_CODES.FILE_NOT_FOUND]: {
+    statusCode: 404,
+    message: "Archivo no encontrado",
+  },
+  [ERROR_CODES.UNSUPPORTED_MEDIA_TYPE]: {
+    statusCode: 415,
+    message: "Tipo de archivo no soportado",
+  },
+  [ERROR_CODES.FILE_TOO_LARGE]: {
+    statusCode: 413,
+    message: "El archivo supera el tamaño máximo permitido",
+  },
+  [ERROR_CODES.INVALID_DOCUMENT_TYPE]: {
+    statusCode: 400,
+    message: "El tipo de documento no es válido",
+  },
   [ERROR_CODES.INTERNAL_SERVER_ERROR]: {
     statusCode: 500,
     message: "Error Interno del Servidor, mala nuestra :(",

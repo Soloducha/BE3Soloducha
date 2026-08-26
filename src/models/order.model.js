@@ -64,6 +64,19 @@ const orderSchema = new mongoose.Schema(
       ref: "Delivery",
       default: null,
     },
+    documents: {
+      type: [
+        {
+          name: { type: String },
+          reference: { type: String },
+          type: { type: String },
+          mimetype: { type: String },
+          size: { type: Number },
+          uploadedAt: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,

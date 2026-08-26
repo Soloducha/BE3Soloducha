@@ -25,7 +25,7 @@ describe("Users — Integration (Mocha/Chai/Supertest)", () => {
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property("status", "success");
       expect(res.body).to.have.property("payload").that.is.an("array").that.is
-        .empty; //el nivel de profesionalidad
+        .empty; //el nivel de profesionalidad de esta definicion papá!
     });
 
     it("debería devolver todos los usuarios creados", async () => {

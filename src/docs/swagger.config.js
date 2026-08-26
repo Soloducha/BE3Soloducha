@@ -13,7 +13,7 @@ const swaggerOptions = {
       title: "shipnow",
       version: "1.0.0",
       description:
-        "Documentación de la API de shipnow. Permite consultar y probar los endpoints de usuarios, productos, pedidos, entregas, mocks y logger.",
+        "Documentación de la API de shipnow. Permite consultar y probar los endpoints de usuarios, productos, pedidos, entregas, mocks, logger, documentos y comprobantes.",
     },
     tags: [
       { name: "Users", description: "Gestión de usuarios" },
@@ -26,6 +26,8 @@ const swaggerOptions = {
         description:
           "Herramienta de validación del logger, no una funcionalidad de negocio",
       },
+      { name: "Documents", description: "Carga y gestión de documentos de usuario" },
+      { name: "Receipts", description: "Asociación de comprobantes a pedidos y entregas" },
     ],
     servers: [
       {

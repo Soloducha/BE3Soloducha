@@ -1,0 +1,67 @@
+paths:
+  /api/receipts/{entityType}/{entityId}:
+    post:
+      summary: asociar comprobante a una entidad
+      tags:
+        - Receipts
+      parameters:
+        - name: entityType
+          in: path
+          required: true
+          description: tipo de entidad (orders o deliveries)
+          schema:
+            type: string
+            enum: [orders, deliveries]
+        - name: entityId
+          in: path
+          required: true
+          description: id de la entidad
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - proof
+              properties:
+                proof:
+                  type: string
+                  format: binary
+                  description: comprobante a subir (PDF, JPEG, PNG o WebP, max 5MB)
+            encoding:
+              proof:
+                contentType: application/pdf, image/jpeg, image/png, image/webp
+      responses:
+        "200":
+          description: comprobante asociado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: tipo de entidad no valido o archivo no proporcionado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: entidad no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "413":
+          description: el archivo supera el tamano maximo de 5MB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "415":
+          description: tipo de archivo no soportado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

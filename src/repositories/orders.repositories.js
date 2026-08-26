@@ -21,6 +21,13 @@ class ordersRepositorie {
     });
   }
 
+  async updateOrder(oid, data) {
+    return Order.findByIdAndUpdate(oid, data, {
+      new: true,
+      runValidators: true,
+    });
+  }
+
   async updateOrderStatus(oid, status) {
     const order = await Order.findByIdAndUpdate(
       oid,

@@ -56,8 +56,23 @@ components:
             properties:
               name:
                 type: string
+                description: nombre original del archivo
               reference:
                 type: string
+                description: nombre generado en el servidor
+              type:
+                type: string
+                enum: [document, license, proof]
+                description: tipo de documento
+              mimetype:
+                type: string
+                example: application/pdf
+              size:
+                type: number
+                description: tamano en bytes
+              uploadedAt:
+                type: string
+                format: date-time
         _id:
           type: string
           example: 507f1f77bcf86cd799439011
@@ -312,6 +327,25 @@ components:
           nullable: true
           description: id de la entrega asociada (ref Delivery)
           example: null
+        documents:
+          type: array
+          description: comprobantes y documentos asociados
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reference:
+                type: string
+              type:
+                type: string
+              mimetype:
+                type: string
+              size:
+                type: number
+              uploadedAt:
+                type: string
+                format: date-time
         _id:
           type: string
           example: 507f1f77bcf86cd799439011
@@ -453,6 +487,25 @@ components:
           format: date-time
           nullable: true
           example: null
+        documents:
+          type: array
+          description: comprobantes y documentos asociados
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reference:
+                type: string
+              type:
+                type: string
+              mimetype:
+                type: string
+              size:
+                type: number
+              uploadedAt:
+                type: string
+                format: date-time
         _id:
           type: string
           example: 507f1f77bcf86cd799439011
@@ -566,6 +619,15 @@ components:
                 type: string
               reference:
                 type: string
+              type:
+                type: string
+              mimetype:
+                type: string
+              size:
+                type: number
+              uploadedAt:
+                type: string
+                format: date-time
     MockProduct:
       type: object
       description: >-

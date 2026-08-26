@@ -49,6 +49,23 @@ class usersController {
       next(error);
     }
   }
+
+  async uploadUserDocument(req, res, next) {
+    try {
+      const { uid } = req.params;
+      const file = req.file;
+      const { type } = req.body;
+
+      const user = await usersService.addDocument(uid, file, type);
+
+      res.status(200).json({
+        status: HTTP_STATUS.SUCCESS,
+        payload: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new usersController();

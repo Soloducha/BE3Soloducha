@@ -1,0 +1,65 @@
+paths:
+  /api/documents/{uid}/documents:
+    post:
+      summary: subir documento de usuario
+      tags:
+        - Documents
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - document
+                - type
+              properties:
+                document:
+                  type: string
+                  format: binary
+                  description: archivo a subir (PDF, JPEG, PNG o WebP, max 5MB)
+                type:
+                  type: string
+                  enum: [document, license, proof]
+                  description: tipo de documento
+            encoding:
+              document:
+                contentType: application/pdf, image/jpeg, image/png, image/webp
+      responses:
+        "200":
+          description: documento asociado al usuario correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: tipo de documento invalido o campo type faltante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: usuario no encontrado o archivo no proporcionado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "413":
+          description: el archivo supera el tamano maximo de 5MB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "415":
+          description: tipo de archivo no soportado (solo PDF, JPEG, PNG, WebP)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
