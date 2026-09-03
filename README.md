@@ -324,6 +324,6 @@ La API corre por defecto en el puerto **8080**. Este valor es configurable media
 
 ## Seguridad en produccion
 
-- Los **endpoints de mocks** (`/api/mocks/*`) y el endpoint de **logger test** (`/api/mocks/logger`) estan bloqueados en produccion y devuelven **HTTP 403**.
-- **Swagger UI** queda abierto en todos los entornos. Esta pendiente protegerlo con basic auth.
+- Los **endpoints de mocks** (`/api/mocks/*`) y el endpoint de **logger test** (`/api/mocks/logger`) estan bloqueados en produccion y devuelven **HTTP 403**. no queremos que este al publico (si esta en produccion)
+- **Swagger UI** queda abierto en todos los entornos.
 - Las **variables sensibles** (`JWT_SECRET`, `MONGO_URI`, etc.) nunca deben estar hardcodeadas en el codigo fuente; se gestionan exclusivamente via variables de entorno.
