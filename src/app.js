@@ -9,9 +9,12 @@ import { reqLogger } from "./middleware/requestLogger.js";
 import { swaggerSpec } from "./docs/swagger.config.js";
 import swaggerUi from "swagger-ui-express";
 import upload from "./middleware/uploadMiddleware.js";
+import config from "./config/index.js";
 const app = express();
 
-app.use(cors());
+app.use(
+  cors(/*{ origin: process.env.CLIENT_URL || "http://localhost:3000" }*/),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(upload());
@@ -27,7 +30,12 @@ app.use("/api", apiRouter);
 
 //health check endpoint
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+  res.status(200).json({
+    status: "ok",
+    environment: config.nodeEnv,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 //Swagger UI
