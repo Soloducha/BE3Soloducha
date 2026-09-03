@@ -4,19 +4,22 @@ import { AppError } from "../utils/errors.js";
 import { ERROR_CODES } from "../constants/error.codes.js";
 import { logger } from "../utils/logger.js";
 
-const ENTITY_REPOSITORIES = {
-  orders: ordersRepositorie,
-  deliveries: deliveriesRepositorie,
-};
-
-const ENTITY_NOT_FOUND_CODES = {
-  orders: ERROR_CODES.ORDER_NOT_FOUND,
-  deliveries: ERROR_CODES.DELIVERY_NOT_FOUND,
-};
-
-const ENTITY_NAMES = {
-  orders: "Pedido",
-  deliveries: "Entrega",
+// Estrategia por entidad: cada tipo de entidad aporta una interfaz uniforme
+// (getById / updateById) para que el service no tenga que preguntar qué entidad
+// es en cada paso. Agregar una entidad nueva = sumar una entrada acá.
+const ENTITY_STRATEGY = {
+  orders: {
+    notFoundCode: ERROR_CODES.ORDER_NOT_FOUND,
+    name: "Pedido",
+    getById: (id) => ordersRepositorie.getOrderById(id),
+    updateById: (id, data) => ordersRepositorie.updateOrder(id, data),
+  },
+  deliveries: {
+    notFoundCode: ERROR_CODES.DELIVERY_NOT_FOUND,
+    name: "Entrega",
+    getById: (id) => deliveriesRepositorie.getDeliveryById(id),
+    updateById: (id, data) => deliveriesRepositorie.updateDelivery(id, data),
+  },
 };
 
 class receiptsService {
@@ -25,23 +28,19 @@ class receiptsService {
       throw new AppError(ERROR_CODES.FILE_NOT_FOUND, "Archivo no encontrado");
     }
 
-    const repo = ENTITY_REPOSITORIES[entityType];
-    if (!repo) {
+    const strategy = ENTITY_STRATEGY[entityType];
+    if (!strategy) {
       throw new AppError(
         ERROR_CODES.VALIDATION_ERROR,
         "Tipo de entidad no válido",
       );
     }
 
-    const entity =
-      entityType === "orders"
-        ? await repo.getOrderById(entityId)
-        : await repo.getDeliveryById(entityId);
-
+    const entity = await strategy.getById(entityId);
     if (!entity) {
       throw new AppError(
-        ENTITY_NOT_FOUND_CODES[entityType],
-        `${ENTITY_NAMES[entityType]} no encontrado`,
+        strategy.notFoundCode,
+        `${strategy.name} no encontrado`,
       );
     }
 
@@ -56,19 +55,12 @@ class receiptsService {
 
     entity.documents.push(document);
 
-    let updated;
-    if (entityType === "orders") {
-      updated = await repo.updateOrder(entityId, {
-        documents: entity.documents,
-      });
-    } else {
-      updated = await repo.updateDelivery(entityId, {
-        documents: entity.documents,
-      });
-    }
+    const updated = await strategy.updateById(entityId, {
+      documents: entity.documents,
+    });
 
     logger.info(
-      `Comprobante "${file.originalname}" asociado a ${ENTITY_NAMES[entityType]} ${entityId}`,
+      `Comprobante "${file.originalname}" asociado a ${strategy.name} ${entityId}`,
     );
 
     return updated;
