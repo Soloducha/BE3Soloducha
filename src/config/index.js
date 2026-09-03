@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
+import { AppError } from "../utils/errors.js";
 dotenv.config();
 
 const requiredEnvVars = ["PORT", "MONGO_URI", "JWT_SECRET"];
 
 requiredEnvVars.forEach((varName) => {
   if (!process.env[varName]) {
-    throw new Error(`Falta definir la variable de entorno: ${varName}`);
+    throw new AppError(`Falta definir la variable de entorno: ${varName}`);
   }
 });
 
