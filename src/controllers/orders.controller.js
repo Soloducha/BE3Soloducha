@@ -11,6 +11,16 @@ class ordersController {
     }
   }
 
+  async paginated(req, res, next) {
+    try {
+      let { page, limit } = req.query;
+      const orders = await ordersService.paginated({ page, limit });
+      res.json({ status: HTTP_STATUS.SUCCESS, payload: orders });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getOrderById(req, res, next) {
     try {
       const order = await ordersService.getOrderById(req.params.oid);

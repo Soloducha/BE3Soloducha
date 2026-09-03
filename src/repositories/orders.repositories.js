@@ -6,6 +6,15 @@ class ordersRepositorie {
     return Order.find();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const skip = (page - 1) * limit;
+    return Order.find().skip(skip).limit(limit);
+  }
+
+  async countDocuments() {
+    return Order.countDocuments();
+  }
+
   async getOrderById(oid) {
     return Order.findById(oid);
   }

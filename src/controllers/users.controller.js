@@ -11,6 +11,16 @@ class usersController {
     }
   }
 
+  async paginated(req, res, next) {
+    try {
+      let { page, limit } = req.query;
+      const users = await usersService.paginated({ page, limit });
+      res.json({ status: HTTP_STATUS.SUCCESS, payload: users });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getUserById(req, res, next) {
     try {
       const user = await usersService.getUserById(req.params.uid);

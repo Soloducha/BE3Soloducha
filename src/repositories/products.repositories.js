@@ -5,6 +5,15 @@ class productsRepositorie {
     return await Product.find();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const skip = (page - 1) * limit;
+    return Product.find().skip(skip).limit(limit);
+  }
+
+  async countDocuments() {
+    return Product.countDocuments();
+  }
+
   async getProductById(pid) {
     return await Product.findById(pid);
   }

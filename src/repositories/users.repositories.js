@@ -6,6 +6,15 @@ class usersRepositorie {
     return User.find();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    let skip = (page - 1) * limit;
+    return User.find().skip(skip).limit(limit);
+  }
+
+  async countDocuments() {
+    return User.countDocuments();
+  }
+
   async getUserById(uid) {
     return User.findById(uid);
   }

@@ -16,6 +16,34 @@ class deliveriesService {
     return deliveriesRepositorie.getAllDeliveries();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const currentPage = Number(page);
+    const currentLimit = Number(limit);
+    const result = await deliveriesRepositorie.paginated({
+      page: currentPage,
+      limit: currentLimit,
+    });
+    const totalDocuments = await deliveriesRepositorie.countDocuments();
+    const totalPages = Math.ceil(totalDocuments / limit);
+    return {
+      docs: result,
+      count: result.length,
+      total: totalDocuments,
+      totalPages,
+      page: currentPage,
+      hasPreviousPage: currentPage > 1,
+      hasNextPages: currentPage < totalPages,
+      prevLink:
+        currentPage > 1
+          ? `/api/deliveries?page=${currentPage - 1}&limit=${currentLimit}`
+          : null,
+      nextLink:
+        currentPage < totalPages
+          ? `/api/deliveries?page=${currentPage + 1}&limit=${currentLimit}`
+          : null,
+    };
+  }
+
   async getDeliveryById(did) {
     const delivery = await deliveriesRepositorie.getDeliveryById(did);
     if (!delivery) {

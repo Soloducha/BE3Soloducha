@@ -5,6 +5,15 @@ class deliveriesRepositorie {
     return Delivery.find();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const skip = (page - 1) * limit;
+    return Delivery.find().skip(skip).limit(limit);
+  }
+
+  async countDocuments() {
+    return Delivery.countDocuments();
+  }
+
   async getDeliveryById(did) {
     return Delivery.findById(did);
   }

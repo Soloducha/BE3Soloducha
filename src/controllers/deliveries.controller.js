@@ -11,6 +11,16 @@ class deliveriesController {
     }
   }
 
+  async paginated(req, res, next) {
+    try {
+      let { page, limit } = req.query;
+      const deliveries = await deliveriesService.paginated({ page, limit });
+      res.json({ status: HTTP_STATUS.SUCCESS, payload: deliveries });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getDeliveryById(req, res, next) {
     try {
       const delivery = await deliveriesService.getDeliveryById(req.params.did);

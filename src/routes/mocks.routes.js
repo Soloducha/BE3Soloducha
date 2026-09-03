@@ -1,7 +1,11 @@
 import { Router } from "express";
 import mocksController from "../controllers/mocks.controller.js";
+import { productionGate } from "../middleware/productionGate.js";
 
 const router = Router();
+
+// Todos los endpoints de mocks y logger están bloqueados en producción
+router.use(productionGate);
 
 // GET /api/mocks/users — devuelve datos simulados SIN guardar
 router.get("/users", mocksController.generateUsers);

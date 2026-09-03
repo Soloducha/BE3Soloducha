@@ -2,8 +2,10 @@ import { Router } from "express";
 import ordersController from "../controllers/orders.controller.js";
 
 const router = Router();
-// GET /api/orders
-router.get("", ordersController.getAllOrders);
+// GET /api/orders/all (sin paginación)
+router.get("/all", ordersController.getAllOrders);
+// GET /api/orders (paginado)
+router.get("", ordersController.paginated);
 // GET /api/orders/:oid
 router.get("/:oid", ordersController.getOrderById);
 // POST /api/orders

@@ -8,6 +8,34 @@ class productsService {
     return productsRepositorie.getAllProducts();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const currentPage = Number(page);
+    const currentLimit = Number(limit);
+    const result = await productsRepositorie.paginated({
+      page: currentPage,
+      limit: currentLimit,
+    });
+    const totalDocuments = await productsRepositorie.countDocuments();
+    const totalPages = Math.ceil(totalDocuments / limit);
+    return {
+      docs: result,
+      count: result.length,
+      total: totalDocuments,
+      totalPages,
+      page: currentPage,
+      hasPreviousPage: currentPage > 1,
+      hasNextPages: currentPage < totalPages,
+      prevLink:
+        currentPage > 1
+          ? `/api/products?page=${currentPage - 1}&limit=${currentLimit}`
+          : null,
+      nextLink:
+        currentPage < totalPages
+          ? `/api/products?page=${currentPage + 1}&limit=${currentLimit}`
+          : null,
+    };
+  }
+
   async getProductById(pid) {
     const product = await productsRepositorie.getProductById(pid);
     if (!product) {

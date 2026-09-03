@@ -11,6 +11,34 @@ class usersService {
     return usersRepositorie.getAllUsers();
   }
 
+  async paginated({ page = 1, limit = 10 }) {
+    const currentPage = Number(page);
+    const currentLimit = Number(limit);
+    const result = await usersRepositorie.paginated({
+      page: currentPage,
+      limit: currentLimit,
+    });
+    const totalDocuments = await usersRepositorie.countDocuments();
+    const totalPages = Math.ceil(totalDocuments / limit);
+    return {
+      docs: result,
+      count: result.length,
+      total: totalDocuments,
+      totalPages,
+      page: currentPage,
+      hasPreviousPage: currentPage > 1,
+      hasNextPages: currentPage < totalPages,
+      prevLink:
+        currentPage > 1
+          ? `/api/users?page=${currentPage - 1}&limit=${currentLimit}`
+          : null,
+      nextLink:
+        currentPage < totalPages
+          ? `/api/users?page=${currentPage + 1}&limit=${currentLimit}`
+          : null,
+    };
+  }
+
   async getUserById(uid) {
     const user = await usersRepositorie.getUserById(uid);
     if (!user) {
@@ -89,7 +117,9 @@ class usersService {
     user.documents.push(document);
     await usersRepositorie.updateUser(uid, { documents: user.documents });
 
-    logger.info(`Documento "${file.originalname}" subido para el usuario ${uid}`);
+    logger.info(
+      `Documento "${file.originalname}" subido para el usuario ${uid}`,
+    );
 
     return user;
   }

@@ -3,8 +3,10 @@ import usersController from "../controllers/users.controller.js";
 
 const router = Router();
 
-// GET /api/users
-router.get("", usersController.getAllUsers);
+// GET /api/users/all
+router.get("/all", usersController.getAllUsers);
+// GET /api/users paginado
+router.get("", usersController.paginated);
 // GET /api/users/:uid
 router.get("/:uid", usersController.getUserById);
 // POST /api/users

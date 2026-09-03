@@ -11,6 +11,16 @@ class productsController {
     }
   }
 
+  async paginated(req, res, next) {
+    try {
+      let { page, limit } = req.query;
+      const products = await productsService.paginated({ page, limit });
+      res.json({ status: HTTP_STATUS.SUCCESS, payload: products });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getProductById(req, res, next) {
     try {
       const product = await productsService.getProductById(req.params.pid);

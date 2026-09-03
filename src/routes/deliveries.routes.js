@@ -3,8 +3,10 @@ import deliveriesController from "../controllers/deliveries.controller.js";
 
 const router = Router();
 
-// GET /api/deliveries
-router.get("", deliveriesController.getAllDeliveries);
+// GET /api/deliveries/all (sin paginación)
+router.get("/all", deliveriesController.getAllDeliveries);
+// GET /api/deliveries (paginado)
+router.get("", deliveriesController.paginated);
 // GET /api/deliveries/:did
 router.get("/:did", deliveriesController.getDeliveryById);
 // POST /api/deliveries
