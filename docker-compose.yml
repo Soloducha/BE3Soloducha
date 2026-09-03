@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - MONGO_URL=mongodb://db:27017/soloducha
+    depends_on:
+      - db
+  db:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

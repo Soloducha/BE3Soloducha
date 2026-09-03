@@ -1,16 +1,52 @@
-# ShipNow API - Base
+# ShipNow API
 
-API base para el ejercicio de refactorizacion a arquitectura por capas.
+API REST para gestion de usuarios, productos, pedidos y entregas, construida con arquitectura por capas (service/repository).
 
-## Instalacion
+---
 
-en una terminal, colocarse en el path donde se coloco el proyecto, instalar las dependencias y luego ejecutarlo.
-utilizar los siguientes comandos:
+## Tabla de contenidos
+
+- [Variables de entorno](#variables-de-entorno)
+- [Como correr la API localmente](#como-correr-la-api-localmente)
+- [Documentacion Swagger](#documentacion-swagger)
+- [Endpoints](#endpoints)
+- [Paginacion](#paginacion)
+- [Uploads](#uploads)
+- [Logging](#logging)
+- [Arquitectura (service/repository)](#arquitectura-servicerepository)
+- [Testing](#testing)
+- [Docker](#docker)
+- [Puerto](#puerto)
+- [Seguridad en produccion](#seguridad-en-produccion)
+
+---
+
+## Variables de entorno
+
+La API utiliza las siguientes variables de entorno, definidas en un archivo `.env` en la raiz del proyecto:
+
+| Variable     | Descripcion                                                  | Ejemplo                               |
+| ------------ | ------------------------------------------------------------ | ------------------------------------- |
+| `PORT`       | Puerto del servidor                                          | `8080`                                |
+| `MONGO_URI`  | URI de conexion a MongoDB                                    | `mongodb://localhost:27017/soloducha` |
+| `NODE_ENV`   | Entorno de ejecucion (`development` / `test` / `production`) | `development`                         |
+| `JWT_SECRET` | Secreto para firmar tokens JWT                               | `tu-secreto-aqui`                     |
+
+- El archivo `.env.example` contiene la plantilla de referencia.
+- El archivo `.env.test` contiene las variables preconfiguradas para los tests.
+- **El archivo `.env` NUNCA debe subirse al repositorio.** Esta excluido en `.gitignore` y `.dockerignore`.
+
+---
+
+## Como correr la API localmente
 
 ```bash
+cp .env.example .env   # configurar las variables de entorno
 npm install
 npm run dev
 ```
+
+---
 
 ## Documentacion Swagger
 
@@ -33,40 +69,104 @@ La configuracion de Swagger esta separada de la logica de rutas: los archivos vi
 
 > Nota: la API aun no tiene autenticacion real. Swagger UI se sirve abierta en `/api/docs`; esta pendiente protegerla con basic auth.
 
+---
+
 ## Endpoints
 
-| Metodo | Ruta                        | Descripcion                             |
-| ------ | --------------------------- | --------------------------------------- |
-| GET    | /api/users                  | Listar usuarios                         |
-| GET    | /api/users/:uid             | Obtener usuario por ID                  |
-| POST   | /api/users                  | Crear usuario                           |
-| DELETE | /api/users/:uid             | Eliminar usuario                        |
-| GET    | /api/products               | Listar productos                        |
-| GET    | /api/products/:pid          | Obtener producto por ID                 |
-| POST   | /api/products               | Crear producto                          |
-| PUT    | /api/products/:pid          | Actualizar producto                     |
-| DELETE | /api/products/:pid          | Eliminar producto                       |
-| GET    | /api/orders                 | Listar pedidos                          |
-| GET    | /api/orders/:oid            | Obtener pedido por ID                   |
-| POST   | /api/orders                 | Crear pedido                            |
-| PATCH  | /api/orders/:oid/status     | Actualizar estado pedido                |
-| DELETE | /api/orders/:oid            | Eliminar pedido                         |
-| GET    | /api/deliveries             | Listar entregas                         |
-| GET    | /api/deliveries/:did        | Obtener entrega por ID                  |
-| POST   | /api/deliveries             | Crear entrega                           |
-| PATCH  | /api/deliveries/:did/status | Actualizar estado entrega               |
-| DELETE | /api/deliveries/:did        | Eliminar entrega                        |
-| GET    | /api/mocks/users            | Generar usuarios mock (sin guardar)     |
-| POST   | /api/mocks/users            | Generar e insertar usuarios mock en DB  |
-| GET    | /api/mocks/products         | Generar productos mock (sin guardar)    |
-| POST   | /api/mocks/products         | Generar e insertar productos mock en DB |
-| GET    | /api/mocks/orders           | Generar pedidos mock (sin guardar)      |
-| POST   | /api/mocks/orders           | Generar e insertar pedidos mock en DB   |
-| GET    | /api/mocks/deliveries       | Generar entregas mock (sin guardar)     |
-| POST   | /api/mocks/deliveries       | Generar e insertar entregas mock en DB  |
-| GET    | /api/mocks/logger           | Generar mensajes con todos los logs     |
+| Metodo | Ruta                        | Descripcion                                 |
+| ------ | --------------------------- | ------------------------------------------- |
+| GET    | /api/users                  | Listar usuarios (paginado)                  |
+| GET    | /api/users/all              | Listar todos los usuarios (sin paginacion)  |
+| GET    | /api/users/:uid             | Obtener usuario por ID                      |
+| POST   | /api/users                  | Crear usuario                               |
+| DELETE | /api/users/:uid             | Eliminar usuario                            |
+| GET    | /api/products               | Listar productos (paginado)                 |
+| GET    | /api/products/all           | Listar todos los productos (sin paginacion) |
+| GET    | /api/products/:pid          | Obtener producto por ID                     |
+| POST   | /api/products               | Crear producto                              |
+| PUT    | /api/products/:pid          | Actualizar producto                         |
+| DELETE | /api/products/:pid          | Eliminar producto                           |
+| GET    | /api/orders                 | Listar pedidos (paginado)                   |
+| GET    | /api/orders/all             | Listar todos los pedidos (sin paginacion)   |
+| GET    | /api/orders/:oid            | Obtener pedido por ID                       |
+| POST   | /api/orders                 | Crear pedido                                |
+| PATCH  | /api/orders/:oid/status     | Actualizar estado pedido                    |
+| DELETE | /api/orders/:oid            | Eliminar pedido                             |
+| GET    | /api/deliveries             | Listar entregas (paginado)                  |
+| GET    | /api/deliveries/all         | Listar todas las entregas (sin paginacion)  |
+| GET    | /api/deliveries/:did        | Obtener entrega por ID                      |
+| POST   | /api/deliveries             | Crear entrega                               |
+| PATCH  | /api/deliveries/:did/status | Actualizar estado entrega                   |
+| DELETE | /api/deliveries/:did        | Eliminar entrega                            |
+| GET    | /api/mocks/users            | Generar usuarios mock (sin guardar)         |
+| POST   | /api/mocks/users            | Generar e insertar usuarios mock en DB      |
+| GET    | /api/mocks/products         | Generar productos mock (sin guardar)        |
+| POST   | /api/mocks/products         | Generar e insertar productos mock en DB     |
+| GET    | /api/mocks/orders           | Generar pedidos mock (sin guardar)          |
+| POST   | /api/mocks/orders           | Generar e insertar pedidos mock en DB       |
+| GET    | /api/mocks/deliveries       | Generar entregas mock (sin guardar)         |
+| POST   | /api/mocks/deliveries       | Generar e insertar entregas mock en DB      |
+| GET    | /api/mocks/logger           | Generar mensajes con todos los logs         |
 
 > Los endpoints de mock aceptan un parametro `count` (default: 10). En GET se pasa como query string (`?count=15`), en POST va en el body (`{ "count": 15 }`). Valores fuera del rango 1-100 (negativos, cero, no enteros o mayores a 100) devuelven HTTP 400 con el codigo `INVALID_MOCK_AMOUNT`. Los mocks de orders requieren usuarios existentes y los de deliveries requieren pedidos existentes; si la fuente esta vacia devuelven HTTP 400 con el codigo `MOCK_SOURCE_EMPTY`.
+
+---
+
+## Paginacion
+
+Los endpoints de listado (`/api/users`, `/api/orders`, `/api/products`, `/api/deliveries`) estan paginados por defecto.
+
+**Parametros de query:**
+
+| Parametro | Default | Descripcion                       |
+| --------- | ------- | --------------------------------- |
+| `page`    | `1`     | Numero de pagina a obtener        |
+| `limit`   | `10`    | Cantidad de documentos por pagina |
+
+**Ejemplo:** `GET /api/orders?page=2&limit=5`
+
+**Estructura de la respuesta:**
+
+```json
+{
+  "docs": [],
+  "count": 10,
+  "total": 45,
+  "totalPages": 5,
+  "page": 2,
+  "hasPreviousPage": true,
+  "hasNextPages": true,
+  "prevLink": "/api/orders?page=1&limit=5",
+  "nextLink": "/api/orders?page=3&limit=5"
+}
+```
+
+**Rutas sin paginacion:**
+
+Si se necesitan todos los documentos sin paginacion, se pueden usar las rutas alternativas:
+
+| Ruta                  | Descripcion         |
+| --------------------- | ------------------- |
+| `/api/users/all`      | Todos los usuarios  |
+| `/api/orders/all`     | Todos los pedidos   |
+| `/api/products/all`   | Todos los productos |
+| `/api/deliveries/all` | Todas las entregas  |
+
+---
+
+## Uploads
+
+La API soporta subida de archivos con las siguientes restricciones:
+
+| Restriccion      | Valor                              |
+| ---------------- | ---------------------------------- |
+| Tamano maximo    | 5 MB                               |
+| Tipos permitidos | PDF, JPEG, PNG, WebP               |
+| Directorio       | `uploads/` en la raiz del proyecto |
+
+Los archivos subidos se almacenan en el directorio `uploads/`. Este directorio esta excluido tanto en `.gitignore` como en `.dockerignore`, por lo que **nunca se sube al repositorio ni se incluye en las imagenes Docker**.
+
+---
 
 ## Logging
 
@@ -102,11 +202,17 @@ Los errores (niveles `error` y `fatal`) se guardan en la carpeta `logs/` (archiv
 - **development** (default): registra todos los niveles, incluidos `debug` y `http`.
 - **production**: registra desde `info` hacia arriba; los niveles `debug` y `http` quedan fuera para reducir ruido.
 
-## la logica se separa en service y repository
+---
 
-En Repository solo tengo que cómo obtener y guardar datos.
-y en Service lo que tengo qué hacer con esos datos según las reglas del negocio.
+## Arquitectura (service/repository)
+
+La logica se separa en **service** y **repository**.
+
+En **Repository** solo se encarga de como obtener y guardar datos.
+En **Service** se define que hacer con esos datos segun las reglas del negocio.
 No puede haber logica del negocio en el repository.
+
+---
 
 ## Testing
 
@@ -183,3 +289,41 @@ Cada test valida no solo que el endpoint responde, sino la **estructura del body
 - Emails y nombres usan `Date.now()`
 - No depende de datos cargados manualmente ni del orden de ejecucion
 - La limpieza (`beforeEach` en `test/setup.js`) garantiza aislamiento entre tests
+
+---
+
+## Docker
+
+### Construccion de imagen
+
+```bash
+docker build -t shipnow-api .
+```
+
+### Ejecucion del contenedor
+
+```bash
+docker run -p 8080:8080 --env-file .env shipnow-api
+```
+
+O utilizando docker-compose (incluye la API y una instancia de MongoDB):
+
+```bash
+docker-compose up --build
+```
+
+El archivo `docker-compose` levanta tanto la aplicacion como un contenedor de MongoDB, listos para usar.
+
+---
+
+## Puerto
+
+La API corre por defecto en el puerto **8080**. Este valor es configurable mediante la variable de entorno `PORT`.
+
+---
+
+## Seguridad en produccion
+
+- Los **endpoints de mocks** (`/api/mocks/*`) y el endpoint de **logger test** (`/api/mocks/logger`) estan bloqueados en produccion y devuelven **HTTP 403**.
+- **Swagger UI** queda abierto en todos los entornos. Esta pendiente protegerlo con basic auth.
+- Las **variables sensibles** (`JWT_SECRET`, `MONGO_URI`, etc.) nunca deben estar hardcodeadas en el codigo fuente; se gestionan exclusivamente via variables de entorno.
